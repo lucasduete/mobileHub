@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">MobileHub</string>
+    <string name="descricao_logo">Logo do Aplicativo</string>
+    <string name="digite_email">Digite seu Email</string>
+    <string name="email">Email:</string>
+    <string name="senha">Senha:</string>
+    <string name="digite_senha">Digite sua Senha</string>
+    <string name="button_login">Login</string>
 </resources>
