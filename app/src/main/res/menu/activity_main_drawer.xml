@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_inicio"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Início" />
+        <item
+            android:id="@+id/nav_perfil"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Perfil" />
+        <item
+            android:id="@+id/nav_meusRepositorios"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Meus Repositórios" />
+        <item
+            android:id="@+id/nav_minhasEstrelas"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Minhas Estrelas" />
+        <item
+            android:id="@+id/nav_buscar"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Buscar" />
+        <item
+            android:id="@+id/nav_gists"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Gists" />
+
+    </group>
+
+    <item android:title="Aplicativo">
+        <menu>
+            <item
+                android:id="@+id/nav_manage"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="Configurações" />
+        </menu>
+    </item>
+
+</menu>
