@@ -13,4 +13,10 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+    <string name="profile_photo">Foto de perfil</string>
+    <string name="name_user">Nome de usuario</string>
+    <string name="name_full">Nome completo</string>
+    <string name="biografia_content_description">Biografia do usuário.</string>
+    <string name="biografia_indication">Indicação da seção da biografia</string>
+    <string name="biografia">Biografia:</string>
 </resources>
