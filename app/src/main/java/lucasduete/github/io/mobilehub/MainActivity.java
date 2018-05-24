@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -80,11 +81,20 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
 
         int id = item.getItemId();
+        Intent intent;
 
-        if (id == R.id.nav_perfil) {
-            Intent intent = new Intent(this, ProfileActivity.class);
-            startActivity(intent);
+        switch (id) {
+            case R.id.nav_perfil:
+                intent = new Intent(this, ProfileActivity.class);
+                break;
+            case R.id.nav_buscar:
+                intent = new Intent(this, SearchActivity.class);
+                break;
+            default:
+                return true;
         }
+
+        startActivity(intent);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
