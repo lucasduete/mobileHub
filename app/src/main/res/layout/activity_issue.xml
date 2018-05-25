@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:openDrawer="start"
-    tools:context=".MainActivity">
+    tools:context=".IssueActivity">
 
     <include
         layout="@layout/app_bar_main"
@@ -16,7 +16,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginTop="55dp"
         android:orientation="vertical">
 
@@ -26,46 +26,44 @@
             android:text="asdasd"
             android:visibility="invisible"/>
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/textViewIssueContent"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginLeft="10dp">
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:text="Descrição do Issue"
+            android:textStyle="bold|italic"
+            />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_launcher" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="\@lucasduete criou repositorio lucasduete/pdm-MobileHub"/>
-        </LinearLayout>
-
-        <Space
+        <TextView
+            android:id="@+id/textViewIssueAuthor"
             android:layout_width="wrap_content"
-            android:layout_height="25dp" />
+            android:layout_height="25dp"
+            android:layout_marginTop="6dp"
+            android:text="Username do Autor"
+            android:textStyle="italic"
+            />
 
-        <LinearLayout
+        <ListView
+            android:id="@+id/listViewReponses"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginLeft="10dp">
+            android:layout_height="wrap_content">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_launcher" />
+        </ListView>
 
-            <TextView
-                android:layout_width="wrap_content"
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/inputAnswer"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="\@lelek criou repositorio lelek/apiRest-PHP"/>
-        </LinearLayout>
+                android:hint="Digite sua resposta"
+                android:drawableEnd="@android:drawable/ic_menu_send" />
+        </android.support.design.widget.TextInputLayout>
     </LinearLayout>
+
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
@@ -75,4 +73,5 @@
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/activity_main_drawer" />
+
 </android.support.v4.widget.DrawerLayout>
