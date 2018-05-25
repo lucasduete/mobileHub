@@ -20,6 +20,12 @@
         android:layout_marginTop="50dp"
         android:orientation="vertical">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="53dp"
+            android:text="asdasd"
+            android:visibility="invisible"/>
+
         <Space
             android:layout_width="match_parent"
             android:layout_height="14dp" />
