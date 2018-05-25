@@ -37,6 +37,10 @@
             android:label="@string/title_activity_search"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
+            android:name=".IssueActivity"
+            android:label="@string/title_activity_issue"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".ListIssueActivity"
             android:label="@string/title_activity_list_issue"
             android:theme="@style/AppTheme.NoActionBar"></activity>

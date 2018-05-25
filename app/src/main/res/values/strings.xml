@@ -6,6 +6,7 @@
     <string name="title_activity_repository">RepositoryActivity</string>
     <string name="title_activity_list_repositories">ListRepositoriesActivity</string>
     <string name="title_activity_search">SearchActivity</string>
+    <string name="title_activity_issue">IssueActivity</string>
     <string name="title_activity_list_issue">ListIssueActivity</string>
     <string name="title_activity_list_stars">ListStarsActivity</string>
     <string name="title_activity_setting">SettingActivity</string>
@@ -47,6 +48,11 @@
         <item>AngularJS</item>
         <item>Linux</item>
         <item>android-studio</item>
+    </string-array>
+    <string-array name="static_list_responses">
+        <item>Mesmo problema comigo</item>
+        <item>Tentei reinstalar mas nao deu em nada</item>
+        <item>O problema esta na versao 1.8.95, voltem para a versão 1.8</item>
     </string-array>
     <string name="title_activity_scrolling">ScrollingActivity</string>
     <string name="large_text">
