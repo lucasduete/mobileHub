@@ -24,4 +24,10 @@
         <item>AngularJS</item>
         <item>Linux</item>
     </string-array>
+    <string-array name="static_list_issue">
+        <item>Não ta rodando em x86</item>
+        <item>Erro ao rodar script de desinstalacao</item>
+        <item>Erro ao instalar</item>
+        <item>Não funciona em NTFS</item>
+    </string-array>
 </resources>
