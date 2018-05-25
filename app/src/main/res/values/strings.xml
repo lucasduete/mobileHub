@@ -4,6 +4,7 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="title_activity_repository">RepositoryActivity</string>
+    <string name="title_activity_list_repositories">ListRepositoriesActivity</string>
     <string name="title_activity_search">SearchActivity</string>
     <string name="title_activity_list_issue">ListIssueActivity</string>
     <string name="title_activity_setting">SettingActivity</string>
@@ -34,6 +35,12 @@
         <item>Erro ao rodar script de desinstalacao</item>
         <item>Erro ao instalar</item>
         <item>Não funciona em NTFS</item>
+    </string-array>
+    <string-array name="static_list_repositories">
+        <item>React</item>
+        <item>AngularJS</item>
+        <item>Linux</item>
+        <item>pdm-MobileHub</item>
     </string-array>
     <string name="title_activity_scrolling">ScrollingActivity</string>
     <string name="large_text">
