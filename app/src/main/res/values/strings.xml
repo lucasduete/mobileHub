@@ -7,6 +7,7 @@
     <string name="title_activity_list_repositories">ListRepositoriesActivity</string>
     <string name="title_activity_search">SearchActivity</string>
     <string name="title_activity_list_issue">ListIssueActivity</string>
+    <string name="title_activity_list_stars">ListStarsActivity</string>
     <string name="title_activity_setting">SettingActivity</string>
     <string name="digite_email">Digite seu Email</string>
     <string name="email">Email:</string>
@@ -41,6 +42,11 @@
         <item>AngularJS</item>
         <item>Linux</item>
         <item>pdm-MobileHub</item>
+    </string-array>
+    <string-array name="static_list_stars">
+        <item>AngularJS</item>
+        <item>Linux</item>
+        <item>android-studio</item>
     </string-array>
     <string name="title_activity_scrolling">ScrollingActivity</string>
     <string name="large_text">

@@ -41,6 +41,10 @@
             android:label="@string/title_activity_list_issue"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
+            android:name=".ListStarsActivity"
+            android:label="@string/title_activity_list_stars"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".SettingActivity"
             android:label="@string/title_activity_setting"
             android:theme="@style/AppTheme.NoActionBar"></activity>

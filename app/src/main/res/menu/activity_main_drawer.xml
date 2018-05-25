@@ -24,10 +24,10 @@
             android:id="@+id/nav_buscar"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="Buscar" />
-        <item
-            android:id="@+id/nav_gists"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Gists" />
+        <!--<item-->
+            <!--android:id="@+id/nav_gists"-->
+            <!--android:icon="@drawable/ic_menu_slideshow"-->
+            <!--android:title="Gists" />-->
 
     </group>
 
