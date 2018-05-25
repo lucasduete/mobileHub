@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import lucasduete.github.io.mobilehub.MainActivity;
 import lucasduete.github.io.mobilehub.ProfileActivity;
 import lucasduete.github.io.mobilehub.R;
+import lucasduete.github.io.mobilehub.SearchActivity;
 import lucasduete.github.io.mobilehub.SettingActivity;
 
 public class MenuManage {
@@ -21,6 +22,9 @@ public class MenuManage {
                 break;
             case R.id.nav_perfil:
                 intent = new Intent(context, ProfileActivity.class);
+                break;
+            case R.id.nav_buscar:
+                intent = new Intent(context, SearchActivity.class);
                 break;
             case R.id.nav_settings:
                 intent = new Intent(context, SettingActivity.class);
