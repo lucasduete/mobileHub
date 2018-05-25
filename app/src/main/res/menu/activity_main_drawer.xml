@@ -6,23 +6,23 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_inicio"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/app_logo"
             android:title="Início" />
         <item
             android:id="@+id/nav_perfil"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@android:drawable/ic_menu_edit"
             android:title="Perfil" />
         <item
             android:id="@+id/nav_meusRepositorios"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@android:drawable/ic_menu_sort_by_size"
             android:title="Meus Repositórios" />
         <item
             android:id="@+id/nav_minhasEstrelas"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@android:drawable/ic_menu_sort_by_size"
             android:title="Minhas Estrelas" />
         <item
             android:id="@+id/nav_buscar"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@android:drawable/ic_menu_search"
             android:title="Buscar" />
         <!--<item-->
             <!--android:id="@+id/nav_gists"-->
