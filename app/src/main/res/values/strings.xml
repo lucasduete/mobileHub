@@ -9,6 +9,7 @@
     <string name="title_activity_issue">IssueActivity</string>
     <string name="title_activity_list_issue">ListIssueActivity</string>
     <string name="title_activity_list_stars">ListStarsActivity</string>
+    <string name="title_activity_files">FilesActivity</string>
     <string name="title_activity_setting">SettingActivity</string>
     <string name="digite_email">Digite seu Email</string>
     <string name="email">Email:</string>
@@ -53,6 +54,12 @@
         <item>Mesmo problema comigo</item>
         <item>Tentei reinstalar mas nao deu em nada</item>
         <item>O problema esta na versao 1.8.95, voltem para a versão 1.8</item>
+    </string-array>
+    <string-array name="static_list_files">
+        <item>src</item>
+        <item>.gitignore</item>
+        <item>pom.xml</item>
+        <item>BD.sql</item>
     </string-array>
     <string name="title_activity_scrolling">ScrollingActivity</string>
     <string name="large_text">
