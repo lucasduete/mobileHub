@@ -24,7 +24,7 @@ public class LoginActivity extends AppCompatActivity {
         this.context = this;
     }
 
-    private class MyHandle extends Handler {
+    public class MyHandle extends Handler {
         public MyHandle() {
 
         }
