@@ -66,10 +66,30 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/buttonLogin"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/button_login" />
+        android:layout_height="match_parent"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/buttonOauth"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Oauth"
+            android:background="#ffa500"
+            android:textColor="#fff"
+            android:layout_margin="4dp"/>
+
+        <Button
+            android:id="@+id/buttonLogin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/button_login"
+            android:background="#4ca64c"
+            android:textColor="#fff"
+            android:layout_margin="4dp"/>
+    </LinearLayout>
 
 </LinearLayout>
