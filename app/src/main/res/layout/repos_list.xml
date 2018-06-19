@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="90dp"
+    android:orientation="horizontal"
+    android:layout_marginLeft="35dp"
+    android:layout_marginTop="15dp"
+    android:layout_marginRight="15dp">
+
+    <ImageView
+        android:id="@+id/imageViewFotoRepo"
+        android:layout_width="80dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="10dp"
+        app:srcCompat="@mipmap/ic_launcher_round" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textViewNameRepo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nome do Repositório" />
+
+        <TextView
+            android:id="@+id/textViewNameAuthor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nome do Autor" />
+
+        <TextView
+            android:id="@+id/textViewDescRepo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Descrição do Repositório" />
+
+    </LinearLayout>
+
+</LinearLayout>

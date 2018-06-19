@@ -34,7 +34,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Digite aqui"
-                android:drawableEnd="@android:drawable/ic_menu_search" />
+                android:inputType="text"
+                android:imeOptions="actionSend"
+                android:drawableRight="@android:drawable/ic_menu_search" />
         </android.support.design.widget.TextInputLayout>
 
         <ListView
