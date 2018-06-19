@@ -31,9 +31,7 @@ public class LoginActivity extends AppCompatActivity {
         this.context = this;
 
         Button buttonOauth = (Button) findViewById(R.id.buttonOauth);
-        buttonOauth.setOnClickListener((view) -> {
-            callLoginSerice(LoginService.MODE_OAUTH);
-        });
+        buttonOauth.setOnClickListener((view) -> callLoginSerice(LoginService.MODE_OAUTH));
     }
 
     @Override
@@ -44,6 +42,8 @@ public class LoginActivity extends AppCompatActivity {
         if (data != null) {
             String code = data.getQueryParameter("code");
             Log.d(ConstManager.TAG, code);
+
+            callLoginSerice(LoginService.MODE_AUTHORIZATE);
         } else
             Log.d(ConstManager.TAG, "\nSem code ainda");
     }
@@ -51,6 +51,12 @@ public class LoginActivity extends AppCompatActivity {
     private void callLoginSerice(int operation) {
         Intent intent = new Intent(context, LoginService.class);
         intent.putExtra("mode", operation);
+
+        if (operation == LoginService.MODE_AUTHORIZATE)
+            intent.putExtra("code",
+                    getIntent().getData().getQueryParameter("code")
+            );
+
         startService(intent);
     }
 
@@ -62,7 +68,6 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             Log.d(ConstManager.TAG, "Chegou no Handle");
-
 
             switch (msg.what) {
                 case LoginService.MODE_BASIC:
@@ -78,8 +83,19 @@ public class LoginActivity extends AppCompatActivity {
                 case LoginService.MODE_OAUTH:
                     url = (String) msg.obj;
                     Log.d(ConstManager.TAG, "URL aqui: " + url);
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    startActivity(intent);
+
+                    Intent intentBrowser = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    startActivity(intentBrowser);
+
+                    break;
+                case LoginService.MODE_AUTHORIZATE:
+                    String token = (String) msg.obj;
+                    Log.d(ConstManager.TAG, token);
+
+                    Intent intentMainActivity = new Intent(context, MainActivity.class);
+                    finish();
+                    startActivity(intentMainActivity);
+
                     break;
             }
 

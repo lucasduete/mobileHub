@@ -13,7 +13,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 import lucasduete.github.io.mobilehub.LoginActivity;
-import lucasduete.github.io.mobilehub.MainActivity;
 import lucasduete.github.io.mobilehub.utils.ConstManager;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -28,8 +27,10 @@ public class LoginService extends Service {
     public static final int MODE_AUTHORIZATE = 3;
     public static final int MODE_ERROR = 0;
 
-    public LoginService() {
+    private String code;
 
+    public LoginService() {
+        this.code = null;
     }
 
     @Nullable
@@ -46,10 +47,10 @@ public class LoginService extends Service {
 
             OkHttpClient client = new OkHttpClient();
             MediaType mediaType = MediaType.parse("application/json; charset=utf8");
-            RequestBody requestBody = RequestBody.create(mediaType, "json");
+            //TODO realemnte é necessário? qual json será injetado?
+            RequestBody requestBody = RequestBody.create(mediaType, "ALGUM JSON AQ");
 
             int mode = intent.getIntExtra("mode", 0);
-
 
             switch (mode) {
                 case MODE_BASIC:
@@ -59,7 +60,8 @@ public class LoginService extends Service {
                     oauthMode(client);
                     break;
                 case MODE_AUTHORIZATE:
-                    authorizationMode(client, requestBody);
+                    this.code = intent.getStringExtra("code");
+                    authorizationMode(client);
                     break;
                 default:
                     failLogin();
@@ -125,31 +127,27 @@ public class LoginService extends Service {
         }
     }
 
-    private void authorizationMode(OkHttpClient client, RequestBody requestBody) {
+    private void authorizationMode(OkHttpClient client) {
         Request request = new Request.Builder()
-                .url(String.format("%s/%s", ConstManager.URL_BASE, "login/authorizate"))
-                .post(requestBody)
+                .url(String.format("%s/%s?code=%s", ConstManager.URL_BASE, "login/authorize", this.code))
+                .get()
                 .build();
 
-        JSONObject jsonObject = null;
+        String token = null;
 
         try {
             Response response = client.newCall(request).execute();
-            jsonObject = new JSONObject(response.body().string());
+            token = response.body().string();
         } catch (IOException ex) {
             Log.d(ConstManager.TAG, "\n\nDeu na conexão");
             ex.printStackTrace();
             failLogin();
-        } catch (JSONException ex) {
-            Log.d(ConstManager.TAG, "\n\nDeu ruim no JSON");
-            ex.printStackTrace();
-            failLogin();
         }
 
-        if (jsonObject != null) {
+        if (token != null) {
             Message msg = new Message();
             msg.what = MODE_AUTHORIZATE;
-            msg.obj = true;
+            msg.obj = token;
             LoginActivity.loginHandle.sendMessage(msg);
         }
     }
