@@ -48,7 +48,7 @@ public class RepositoryActivity extends AppCompatActivity
 
         Button issuesButton = (Button) findViewById(R.id.buttonIssues);
         issuesButton.setOnClickListener((View view) -> {
-            Intent intent = new Intent(context, IssueActivity.class);
+            Intent intent = new Intent(context, ListIssueActivity.class);
             startActivity(intent);
         });
 
