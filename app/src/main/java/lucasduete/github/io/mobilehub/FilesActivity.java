@@ -1,5 +1,7 @@
 package lucasduete.github.io.mobilehub;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -9,8 +11,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,12 +25,15 @@ import lucasduete.github.io.mobilehub.manager.MenuManage;
 public class FilesActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    ArrayAdapter<String> adapter;
+    private ArrayAdapter<String> adapter;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_files);
+
+        this.context = this;
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -38,6 +46,24 @@ public class FilesActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        Button issuesButton = (Button) findViewById(R.id.buttonIssues);
+        issuesButton.setOnClickListener((View view) -> {
+            Intent intent = new Intent(context, IssueActivity.class);
+            startActivity(intent);
+        });
+
+        Button repositoryButton = (Button) findViewById(R.id.buttonRepository);
+        repositoryButton.setOnClickListener(view -> {
+            Intent intent = new Intent(context, RepositoryActivity.class);
+            finish();
+            startActivity(intent);
+        });
+
+        Button downloadButton = (Button) findViewById(R.id.buttonDownload);
+        downloadButton.setOnClickListener(view -> Toast
+                .makeText(context, "TU BAIXOUUU CARA e.e <3 :3", Toast.LENGTH_SHORT)
+                .show());
 
         ListView listView = (ListView) findViewById(R.id.listViewFiles);
         ArrayList<String> arrayFiles = new ArrayList<>();

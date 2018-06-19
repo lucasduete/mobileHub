@@ -55,13 +55,14 @@ public class RepositoryActivity extends AppCompatActivity
         Button filesButton = (Button) findViewById(R.id.buttonFiles);
         filesButton.setOnClickListener(view -> {
             Intent intent = new Intent(context, FilesActivity.class);
+            finish();
             startActivity(intent);
         });
 
         Button downloadButton = (Button) findViewById(R.id.buttonDownload);
-        downloadButton.setOnClickListener(view -> {
-            Toast.makeText(context, "TU BAIXOUUU CARA e.e <3 :3", Toast.LENGTH_SHORT).show();
-        });
+        downloadButton.setOnClickListener(view -> Toast
+                .makeText(context, "TU BAIXOUUU CARA e.e <3 :3", Toast.LENGTH_SHORT)
+                .show());
 
     }
 
