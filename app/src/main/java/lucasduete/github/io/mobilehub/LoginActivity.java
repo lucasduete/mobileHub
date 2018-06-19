@@ -32,6 +32,12 @@ public class LoginActivity extends AppCompatActivity {
 
         Button buttonOauth = (Button) findViewById(R.id.buttonOauth);
         buttonOauth.setOnClickListener((view) -> callLoginSerice(LoginService.MODE_OAUTH));
+
+        Button buttonLogin = (Button) findViewById(R.id.buttonLogin);
+        buttonLogin.setOnClickListener((view) -> {
+            Intent intent = new Intent(context, MainActivity.class);
+            startActivity(intent);
+        });
     }
 
     @Override
