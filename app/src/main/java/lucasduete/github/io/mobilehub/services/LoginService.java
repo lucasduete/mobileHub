@@ -102,7 +102,7 @@ public class LoginService extends Service {
 
     private void oauthMode(OkHttpClient client) {
         Request request = new Request.Builder()
-                .url(String.format("%s/%s", ConstManager.URL_BASE, "login/oauth"))
+                .url(String.format("%s/%s", ConstManager.URL_BASE, "login/oauth2"))
                 .get()
                 .build();
 

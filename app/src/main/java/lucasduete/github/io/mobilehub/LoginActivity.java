@@ -33,12 +33,19 @@ public class LoginActivity extends AppCompatActivity {
         Button buttonOauth = (Button) findViewById(R.id.buttonOauth);
         buttonOauth.setOnClickListener((view) -> {
             callLoginSerice(LoginService.MODE_OAUTH);
-//            while (url == null)
-//                Log.d(ConstManager.TAG, "Waiting...");
-//            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-//            startActivity(intent);
         });
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Uri data = getIntent().getData();
+        if (data != null) {
+            String code = data.getQueryParameter("code");
+            Log.d(ConstManager.TAG, code);
+        } else
+            Log.d(ConstManager.TAG, "\nSem code ainda");
     }
 
     private void callLoginSerice(int operation) {
@@ -70,7 +77,9 @@ public class LoginActivity extends AppCompatActivity {
                     break;
                 case LoginService.MODE_OAUTH:
                     url = (String) msg.obj;
-                    Log.d(ConstManager.TAG, url);
+                    Log.d(ConstManager.TAG, "URL aqui: " + url);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    startActivity(intent);
                     break;
             }
 
