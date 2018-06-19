@@ -1,15 +1,19 @@
 package lucasduete.github.io.mobilehub.adapters;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 import lucasduete.github.io.mobilehub.R;
+import lucasduete.github.io.mobilehub.RepositoryActivity;
 import lucasduete.github.io.mobilehub.models.Repository;
 
 public class RepositoryAdapter extends BaseAdapter {
@@ -55,9 +59,17 @@ public class RepositoryAdapter extends BaseAdapter {
         textView.setText(Repository.getDescricao());
 
         ImageView imageView = (ImageView) view.findViewById(R.id.imageViewFotoRepo);
-        //  TODO Arrumar erro do Picasso no Manifesto
-        //  Picasso.get().load(Repository.getFoto()).into(imageView);
+        Picasso.get().load(Repository.getFoto()).into(imageView);
+
+        view.setOnClickListener(localView -> {
+            Intent intent = new Intent(
+                    view.getContext().getApplicationContext(),
+                    RepositoryActivity.class);
+            view.getContext().getApplicationContext().startActivity(intent);
+        });
 
         return view;
     }
+
+
 }
