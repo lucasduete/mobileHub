@@ -34,10 +34,7 @@ public class LoginActivity extends AppCompatActivity {
         buttonOauth.setOnClickListener((view) -> callLoginSerice(LoginService.MODE_OAUTH));
 
         Button buttonLogin = (Button) findViewById(R.id.buttonLogin);
-        buttonLogin.setOnClickListener((view) -> {
-            Intent intent = new Intent(context, MainActivity.class);
-            startActivity(intent);
-        });
+        buttonLogin.setOnClickListener((view) -> login());
     }
 
     @Override
@@ -80,8 +77,7 @@ public class LoginActivity extends AppCompatActivity {
                     Boolean result = (Boolean) msg.obj;
                     Log.d(ConstManager.TAG, String.format("O valor foi: %s", result.toString()));
                     if (result) {
-                        Intent intent = new Intent(context, MainActivity.class);
-                        startActivity(intent);
+                        login();
                     } else {
                         Toast.makeText(context, "Deu ruim no Login", Toast.LENGTH_SHORT).show();
                     }
@@ -98,13 +94,16 @@ public class LoginActivity extends AppCompatActivity {
                     String token = (String) msg.obj;
                     Log.d(ConstManager.TAG, token);
 
-                    Intent intentMainActivity = new Intent(context, MainActivity.class);
-                    finish();
-                    startActivity(intentMainActivity);
-
+                    login();
                     break;
             }
 
         }
+    }
+
+    private void login() {
+        Intent intentMainActivity = new Intent(context, MainActivity.class);
+        finish();
+        startActivity(intentMainActivity);
     }
 }
