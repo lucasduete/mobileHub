@@ -2,6 +2,7 @@ package lucasduete.github.io.mobilehub;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
@@ -18,9 +19,10 @@ import lucasduete.github.io.mobilehub.utils.ConstManager;
 
 public class LoginActivity extends AppCompatActivity {
 
-    public static MyHandle loginHandle;
-    private Context context;
+    public static MyHandle loginHandle = null;
+    private Context context = null;
     private String url = null;
+    private SharedPreferences sharedPreferences = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         loginHandle = new MyHandle();
+        this.sharedPreferences = getSharedPreferences(ConstManager.PREFS_NAME, MODE_PRIVATE);
         this.context = this;
 
         Button buttonOauth = (Button) findViewById(R.id.buttonOauth);
@@ -94,6 +97,7 @@ public class LoginActivity extends AppCompatActivity {
                     String token = (String) msg.obj;
                     Log.d(ConstManager.TAG, token);
 
+                    sharedPreferences.edit().putString("token", token);
                     login();
                     break;
             }
