@@ -1,5 +1,7 @@
 package lucasduete.github.io.mobilehub;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,12 +22,15 @@ import lucasduete.github.io.mobilehub.manager.MenuManage;
 public class ListRepositoriesActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    ArrayAdapter<String> adapter;
+    private ArrayAdapter<String> adapter;
+    private Context context = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_repositories);
+
+        this.context = this;
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -50,6 +55,10 @@ public class ListRepositoriesActivity extends AppCompatActivity
         );
 
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            Intent intent = new Intent(context, RepositoryActivity.class);
+            startActivity(intent);
+        });
 
     }
 
