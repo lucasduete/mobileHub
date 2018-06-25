@@ -3,12 +3,15 @@ package lucasduete.github.io.mobilehub;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.JsonReader;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,15 +19,24 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import lucasduete.github.io.mobilehub.adapters.IssueAdapter;
 import lucasduete.github.io.mobilehub.manager.MenuManage;
+import lucasduete.github.io.mobilehub.models.Issue;
 
 public class ListIssueActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private ArrayAdapter<String> adapter;
+    public static MyHandle listIssueHandler;
+
+    private ArrayList<Issue> issues = new ArrayList<>();
+    private IssueAdapter adapter;
     private Context context;
 
     @Override
@@ -36,6 +48,7 @@ public class ListIssueActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         this.context = this;
+        this.listIssueHandler = new MyHandle();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -46,22 +59,7 @@ public class ListIssueActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        ListView listView = (ListView) findViewById(R.id.listViewIssuesList);
-        ArrayList<String> arrayRepos = new ArrayList<>();
-        arrayRepos.addAll(Arrays.asList(getResources().getStringArray(R.array.static_list_issue)));
-
-        adapter = new ArrayAdapter<String>(
-                ListIssueActivity.this,
-                android.R.layout.simple_list_item_1,
-                arrayRepos
-        );
-
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            Intent intent = new Intent(context, IssueActivity.class);
-            startActivity(intent);
-        });
-
+        atualizarListView();
     }
 
     @Override
@@ -107,5 +105,48 @@ public class ListIssueActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public class MyHandle extends Handler {
+        public MyHandle() {
+
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            ArrayList<Issue> issuesTemp = new ArrayList<>();
+            JSONArray jsonArray = (JSONArray) msg.obj;
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                try {
+                    Issue issue = new Issue();
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                    issue.setNome(jsonObject.getString("nome"));
+                    issue.setNumero(jsonObject.getInt("numero"));
+                    issue.setDescricao(jsonObject.getString("descricao"));
+                    issue.setNomeAutor(jsonObject.getString("nomeAutor"));
+                    issue.setFotoAutor(jsonObject.getString("fotoAutor"));
+
+                } catch (JSONException ex) {
+                    ex.printStackTrace();
+                }
+            }
+
+            issues.clear();
+            issues.addAll(issuesTemp);
+            atualizarListView();
+        }
+    }
+
+    private void atualizarListView() {
+        ListView listView = (ListView) findViewById(R.id.listViewIssuesList);
+
+        adapter = new IssueAdapter(
+                issues,
+                this
+        );
+
+        listView.setAdapter(adapter);
     }
 }
