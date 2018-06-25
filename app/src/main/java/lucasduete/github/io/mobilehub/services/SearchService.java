@@ -41,7 +41,7 @@ public class SearchService extends Service {
 
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
-                    .url(String.format("%s/%s?keyword=%s", ConstManager.URL_BASE, "repositories/search", keyword))
+                    .url(String.format("%s/repositories/search?keyword=%s", ConstManager.URL_BASE, keyword))
                     .get()
                     .build();
 
