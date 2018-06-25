@@ -62,10 +62,8 @@ public class RepositoryAdapter extends BaseAdapter {
         Picasso.get().load(Repository.getFoto()).into(imageView);
 
         view.setOnClickListener(localView -> {
-            Intent intent = new Intent(
-                    view.getContext().getApplicationContext(),
-                    RepositoryActivity.class);
-            view.getContext().getApplicationContext().startActivity(intent);
+            Intent intent = new Intent(view.getContext(), RepositoryActivity.class);
+            view.getContext().startActivity(intent);
         });
 
         return view;
