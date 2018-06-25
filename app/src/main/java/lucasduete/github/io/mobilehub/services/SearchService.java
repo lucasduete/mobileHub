@@ -49,11 +49,8 @@ public class SearchService extends Service {
 
             try {
                 Response response = client.newCall(request).execute();
-                Log.d("assd", "objeto");
-                JSONObject jsonObject = new JSONObject(response.body().string());
-                Log.d("asd", jsonObject.toString());
-
-                jsonArray = jsonObject.getJSONArray("items");
+                jsonArray = new JSONArray(response.body().string());
+                Log.d(ConstManager.TAG, "\n\nObjeto: \n" + jsonArray.toString());
 
             } catch (IOException ex) {
                 Log.d(ConstManager.TAG, "\n\nDeu pau na conexão");
