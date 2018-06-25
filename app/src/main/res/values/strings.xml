@@ -151,4 +151,8 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
+    <string name="nome_issue">Nome do Issue</string>
+    <string name="numero_issue">Numero do Issue</string>
+    <string name="nome_autor">Nome do Autor</string>
+    <string name="contentdescripton_foto_autor_issue">Foto de perfil do autor do issue</string>
 </resources>
