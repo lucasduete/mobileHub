@@ -33,11 +33,13 @@ public class ListIssueService extends Service {
         new Thread(() -> {
             Log.d(ConstManager.TAG, "\nChegou no Service de ListIssues");
 
-            String repository = intent.getStringExtra("repository");
+            String repo = intent.getStringExtra("repo");
+            String owner = intent.getStringExtra("owner");
 
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
-                    .url(String.format("%s/issues/repository?name=%s", ConstManager.URL_BASE, repository))
+                    .url(String.format("%s/issues/repository?owner=%s&repo=%s",
+                            ConstManager.URL_BASE, owner, repo))
                     .get()
                     .build();
 
