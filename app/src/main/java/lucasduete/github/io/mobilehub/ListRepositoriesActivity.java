@@ -3,26 +3,39 @@ package lucasduete.github.io.mobilehub;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import lucasduete.github.io.mobilehub.adapters.RepositoryAdapter;
 import lucasduete.github.io.mobilehub.manager.MenuManage;
+import lucasduete.github.io.mobilehub.models.Repository;
+import lucasduete.github.io.mobilehub.services.ListRepositoriesService;
+import lucasduete.github.io.mobilehub.utils.ConstManager;
 
 public class ListRepositoriesActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private ArrayAdapter<String> adapter;
+    public static ListRepositoriesHander listRepositoriesHander = null;
+
+    private ArrayList<Repository> repositories = new ArrayList<>();
+    private RepositoryAdapter adapter;
     private Context context = null;
 
     @Override
@@ -44,22 +57,15 @@ public class ListRepositoriesActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        ListView listView = (ListView) findViewById(R.id.listViewRepositories);
-        ArrayList<String> arrayRepos = new ArrayList<>();
-        arrayRepos.addAll(Arrays.asList(getResources().getStringArray(R.array.static_list_repositories)));
+        atualizarListView();
 
-        adapter = new ArrayAdapter<String>(
-                ListRepositoriesActivity.this,
-                android.R.layout.simple_list_item_1,
-                arrayRepos
-        );
+    }
 
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            Intent intent = new Intent(context, RepositoryActivity.class);
-            startActivity(intent);
-        });
-
+    @Override
+    protected void onResume() {
+        Intent intent = new Intent(context, ListRepositoriesService.class);
+        startService(intent);
+        super.onResume();
     }
 
     @Override
@@ -105,5 +111,51 @@ public class ListRepositoriesActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public class ListRepositoriesHander extends Handler {
+        public ListRepositoriesHander() {
+
+        }
+
+        //TODO centralizar este codigo
+        @Override
+        public void handleMessage(Message msg) {
+            ArrayList<Repository> repositoriesTemp = new ArrayList<>();
+            JSONArray jsonArray = (JSONArray) msg.obj;
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                try {
+                    Repository repository = new Repository();
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                    Log.d(ConstManager.TAG, "\n\n\n OBJETO: " + jsonObject + "\n\n");
+
+                    repository.setNome(jsonObject.getString("nome"));
+                    repository.setDescricao(jsonObject.getString("descricao"));
+                    repository.setNomeAutor(jsonObject.getString("nomeAutor"));
+                    repository.setFoto(jsonObject.getString("fotoAutor"));
+
+                    repositoriesTemp.add(repository);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+
+            repositories.clear();
+            repositories.addAll(repositoriesTemp);
+            atualizarListView();
+        }
+    }
+
+    private void atualizarListView() {
+        ListView listView = (ListView) findViewById(R.id.listViewSearch);
+
+        adapter = new RepositoryAdapter(
+                repositories,
+                this
+        );
+
+        listView.setAdapter(adapter);
     }
 }
