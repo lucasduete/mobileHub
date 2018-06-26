@@ -136,10 +136,12 @@ public class SearchActivity extends AppCompatActivity
                     Repository repository = new Repository();
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-                    repository.setNome(jsonObject.getString("full_name"));
-                    repository.setDescricao(jsonObject.getString("description"));
-                    repository.setNomeAutor(jsonObject.getJSONObject("owner").getString("login"));
-                    repository.setFoto(jsonObject.getJSONObject("owner").getString("avatar_url"));
+                    Log.d(ConstManager.TAG, "\n\n\n OBJETO: " + jsonObject + "\n\n");
+
+                    repository.setNome(jsonObject.getString("nome"));
+                    repository.setDescricao(jsonObject.getString("descricao"));
+                    repository.setNomeAutor(jsonObject.getString("nomeAutor"));
+                    repository.setFoto(jsonObject.getString("fotoAutor"));
 
                     repositoriesTemp.add(repository);
                 } catch (Exception ex) {
