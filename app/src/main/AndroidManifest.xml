@@ -87,6 +87,10 @@
             android:name=".services.ListStarsService"
             android:enabled="true"
             android:exported="false" />
+        <service
+            android:name=".services.ListRepositoriesService"
+            android:enabled="true"
+            android:exported="false" />
     </application>
 
 </manifest>
