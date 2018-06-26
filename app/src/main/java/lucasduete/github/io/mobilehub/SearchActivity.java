@@ -126,6 +126,7 @@ public class SearchActivity extends AppCompatActivity
 
         }
 
+        //TODO centralizar este codigo
         @Override
         public void handleMessage(Message msg) {
             ArrayList<Repository> repositoriesTemp = new ArrayList<>();
