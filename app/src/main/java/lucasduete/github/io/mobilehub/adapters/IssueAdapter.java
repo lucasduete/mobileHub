@@ -22,9 +22,14 @@ public class IssueAdapter extends BaseAdapter {
     private final List<Issue> issues;
     private final Activity activity;
 
-    public IssueAdapter(List<Issue> issues, Activity activity) {
+    private final String repoName;
+    private final String repoOwner;
+
+    public IssueAdapter(List<Issue> issues, Activity activity, String repoName, String repoOwner) {
         this.issues = issues;
         this.activity = activity;
+        this.repoName = repoName;
+        this.repoOwner = repoOwner;
     }
 
     @Override
@@ -64,6 +69,9 @@ public class IssueAdapter extends BaseAdapter {
 
         view.setOnClickListener(localView -> {
             Intent intent = new Intent(view.getContext(), IssueActivity.class);
+            intent.putExtra("repoName", this.repoName);
+            intent.putExtra("repoOwner", this.repoOwner);
+            intent.putExtra("issueNumber", issue.getNumero());
             view.getContext().startActivity(intent);
         });
 

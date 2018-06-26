@@ -39,6 +39,9 @@ public class ListIssueActivity extends AppCompatActivity
     private IssueAdapter adapter;
     private Context context;
 
+    private String repoName;
+    private String repoOwner;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +52,8 @@ public class ListIssueActivity extends AppCompatActivity
 
         this.context = this;
         this.listIssueHandler = new MyHandle();
+        this.repoName = getIntent().getStringExtra("repoName");
+        this.repoOwner = getIntent().getStringExtra("repoOwner");
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -144,7 +149,9 @@ public class ListIssueActivity extends AppCompatActivity
 
         adapter = new IssueAdapter(
                 issues,
-                this
+                this,
+                this.repoName,
+                this.repoOwner
         );
 
         listView.setAdapter(adapter);
