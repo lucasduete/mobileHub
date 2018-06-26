@@ -45,24 +45,26 @@ public class RepositoryAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         View view = activity.getLayoutInflater().inflate(R.layout.repos_list, parent, false);
-        Repository Repository = Repositorys.get(position);
+        Repository repository = Repositorys.get(position);
 
         TextView textView;
 
         textView = (TextView) view.findViewById(R.id.textViewNameRepo);
-        textView.setText(Repository.getNome());
+        textView.setText(repository .getNome());
 
         textView = (TextView) view.findViewById(R.id.textViewNameAuthor);
-        textView.setText(Repository.getNomeAutor());
+        textView.setText(repository .getNomeAutor());
 
         textView = (TextView) view.findViewById(R.id.textViewDescRepo);
-        textView.setText(Repository.getDescricao());
+        textView.setText(repository .getDescricao());
 
         ImageView imageView = (ImageView) view.findViewById(R.id.imageViewFotoRepo);
-        Picasso.get().load(Repository.getFoto()).into(imageView);
+        Picasso.get().load(repository .getFoto()).into(imageView);
 
         view.setOnClickListener(localView -> {
             Intent intent = new Intent(view.getContext(), RepositoryActivity.class);
+            intent.putExtra("repoName", repository.getNome());
+            intent.putExtra("repoOwner", repository.getNomeAutor());
             view.getContext().startActivity(intent);
         });
 
