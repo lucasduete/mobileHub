@@ -95,7 +95,7 @@ public class LoginActivity extends AppCompatActivity {
                     String token = (String) msg.obj;
                     Log.d(ConstManager.TAG, token);
 
-                    sharedPreferences.edit().putString("token", token);
+                    sharedPreferences.edit().putString("token", token).commit();
                     login();
                     break;
             }
