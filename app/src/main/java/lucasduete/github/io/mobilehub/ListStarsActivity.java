@@ -149,7 +149,7 @@ public class ListStarsActivity extends AppCompatActivity
     }
 
     private void atualizarListView() {
-        ListView listView = (ListView) findViewById(R.id.listViewSearch);
+        ListView listView = (ListView) findViewById(R.id.listViewStars);
 
         adapter = new RepositoryAdapter(
                 repositories,

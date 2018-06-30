@@ -37,7 +37,7 @@ public class ListRepositoriesService extends Service {
 
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
-                    .url(String.format("%s/repositories/stars", ConstManager.TAG))
+                    .url(String.format("%s/repositories/stars", ConstManager.URL_BASE))
                     .header("Authorization", String.format("Bearer %s", token))
                     .get()
                     .build();
