@@ -65,7 +65,7 @@ public class ListIssueActivity extends AppCompatActivity
 
     @Override
     protected void onStart() {
-        new ListIssueTask().execute();
+        new ListIssueTask().execute(repoName, repoOwner);
         super.onStart();
     }
 
