@@ -77,10 +77,6 @@
             android:enabled="true"
             android:exported="false" />
         <service
-            android:name=".services.ListIssueService"
-            android:enabled="true"
-            android:exported="false" />
-        <service
             android:name=".services.ListStarsService"
             android:enabled="true"
             android:exported="false" />

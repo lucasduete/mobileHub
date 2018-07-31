@@ -1,39 +1,37 @@
 package lucasduete.github.io.mobilehub;
 
 import android.content.Context;
-import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.JsonReader;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import lucasduete.github.io.mobilehub.adapters.IssueAdapter;
 import lucasduete.github.io.mobilehub.manager.MenuManage;
 import lucasduete.github.io.mobilehub.models.Issue;
+import lucasduete.github.io.mobilehub.utils.ConstManager;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class ListIssueActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
-    public static MyHandle listIssueHandler;
 
     private ArrayList<Issue> issues = new ArrayList<>();
     private IssueAdapter adapter;
@@ -47,29 +45,33 @@ public class ListIssueActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_issues);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         this.context = this;
-        this.listIssueHandler = new MyHandle();
         this.repoName = getIntent().getStringExtra("repoName");
         this.repoOwner = getIntent().getStringExtra("repoOwner");
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        atualizarListView();
+    }
+
+    @Override
+    protected void onStart() {
+        new ListIssueTask().execute();
+        super.onStart();
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -79,19 +81,14 @@ public class ListIssueActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
@@ -107,20 +104,68 @@ public class ListIssueActivity extends AppCompatActivity
                 MenuManage.getActivity(this, item)
         );
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    public class MyHandle extends Handler {
-        public MyHandle() {
+    private void atualizarListView() {
+        ListView listView = findViewById(R.id.listViewIssuesList);
 
+        adapter = new IssueAdapter(
+                issues,
+                this,
+                this.repoName,
+                this.repoOwner
+        );
+
+        listView.setAdapter(adapter);
+    }
+
+    private class ListIssueTask extends AsyncTask<String, Integer, JSONArray> {
+
+        @Override
+        protected JSONArray doInBackground(String... strings) {
+            Log.d(ConstManager.TAG, "\nChegou na Task de ListIssues");
+
+            String repo = strings[0];
+            String owner = strings[1];
+
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder()
+                    .url(String.format("%s/issues/repository?owner=%s&repo=%s",
+                            ConstManager.URL_BASE, owner, repo))
+                    .get()
+                    .build();
+
+            JSONArray jsonArray = null;
+
+            try {
+                Response response = client.newCall(request).execute();
+                jsonArray = new JSONArray(response.body().string());
+                Log.d(ConstManager.TAG, "\n\nObjeto :\n" + jsonArray.toString());
+
+            } catch (IOException ex) {
+                Log.d(ConstManager.TAG, "\n\nDeu pau na conexão");
+                ex.printStackTrace();
+            } catch (JSONException ex) {
+                Log.d(ConstManager.TAG, "\n\nDeu pau na Conversão de JSON");
+                ex.printStackTrace();
+            }
+
+            return jsonArray;
         }
 
         @Override
-        public void handleMessage(Message msg) {
+        protected void onPostExecute(JSONArray jsonArray) {
+
+            if (jsonArray == null || jsonArray.length() <= 0) {
+                Toast.makeText(context, "Problema com a conexão com a internet",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             ArrayList<Issue> issuesTemp = new ArrayList<>();
-            JSONArray jsonArray = (JSONArray) msg.obj;
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 try {
@@ -142,18 +187,5 @@ public class ListIssueActivity extends AppCompatActivity
             issues.addAll(issuesTemp);
             atualizarListView();
         }
-    }
-
-    private void atualizarListView() {
-        ListView listView = (ListView) findViewById(R.id.listViewIssuesList);
-
-        adapter = new IssueAdapter(
-                issues,
-                this,
-                this.repoName,
-                this.repoOwner
-        );
-
-        listView.setAdapter(adapter);
     }
 }
