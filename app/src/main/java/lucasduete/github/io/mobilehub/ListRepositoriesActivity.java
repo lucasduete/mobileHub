@@ -2,6 +2,7 @@ package lucasduete.github.io.mobilehub;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,25 +15,26 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import lucasduete.github.io.mobilehub.adapters.RepositoryAdapter;
 import lucasduete.github.io.mobilehub.manager.MenuManage;
 import lucasduete.github.io.mobilehub.models.Repository;
-import lucasduete.github.io.mobilehub.services.ListRepositoriesService;
 import lucasduete.github.io.mobilehub.utils.ConstManager;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class ListRepositoriesActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
-    public static ListRepositoriesHander listRepositoriesHander = null;
 
     private ArrayList<Repository> repositories = new ArrayList<>();
     private RepositoryAdapter adapter;
@@ -45,16 +47,16 @@ public class ListRepositoriesActivity extends AppCompatActivity
 
         this.context = this;
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         atualizarListView();
@@ -63,14 +65,13 @@ public class ListRepositoriesActivity extends AppCompatActivity
 
     @Override
     protected void onResume() {
-        Intent intent = new Intent(context, ListRepositoriesService.class);
-        startService(intent);
+        new ListRepositoriesTask().execute();
         super.onResume();
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -80,19 +81,14 @@ public class ListRepositoriesActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
@@ -113,16 +109,61 @@ public class ListRepositoriesActivity extends AppCompatActivity
         return true;
     }
 
-    public class ListRepositoriesHander extends Handler {
-        public ListRepositoriesHander() {
+    private void atualizarListView() {
+        ListView listView = (ListView) findViewById(R.id.listViewRepositories);
 
+        adapter = new RepositoryAdapter(
+                repositories,
+                this
+        );
+
+        listView.setAdapter(adapter);
+    }
+
+    private class ListRepositoriesTask extends AsyncTask<String, Integer, JSONArray> {
+
+        @Override
+        protected JSONArray doInBackground(String... strings) {
+            Log.d(ConstManager.TAG, "Chegou no Service");
+
+            String token = getSharedPreferences(ConstManager.PREFS_NAME, MODE_PRIVATE)
+                    .getString("token", null);
+
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder()
+                    .url(String.format("%s/repositories/stars", ConstManager.URL_BASE))
+                    .header("Authorization", String.format("Bearer %s", token))
+                    .get()
+                    .build();
+
+            JSONArray jsonArray = null;
+
+            try {
+                Response response = client.newCall(request).execute();
+                jsonArray = new JSONArray(response.body().string());
+                Log.d(ConstManager.TAG, "\n\nObjeto :\n" + jsonArray.toString());
+
+            } catch (IOException ex) {
+                Log.d(ConstManager.TAG, "\n\nDeu pau na conexão");
+                ex.printStackTrace();
+            } catch (JSONException ex) {
+                Log.d(ConstManager.TAG, "\n\nDeu pau na Conversão de JSON");
+                ex.printStackTrace();
+            }
+
+            return jsonArray;
         }
 
-        //TODO centralizar este codigo
         @Override
-        public void handleMessage(Message msg) {
+        protected void onPostExecute(JSONArray jsonArray) {
+
+            if (jsonArray == null || jsonArray.length() <= 0) {
+                Toast.makeText(context, "Problema com a conexão com a internet",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             ArrayList<Repository> repositoriesTemp = new ArrayList<>();
-            JSONArray jsonArray = (JSONArray) msg.obj;
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 try {
@@ -146,16 +187,5 @@ public class ListRepositoriesActivity extends AppCompatActivity
             repositories.addAll(repositoriesTemp);
             atualizarListView();
         }
-    }
-
-    private void atualizarListView() {
-        ListView listView = (ListView) findViewById(R.id.listViewRepositories);
-
-        adapter = new RepositoryAdapter(
-                repositories,
-                this
-        );
-
-        listView.setAdapter(adapter);
     }
 }

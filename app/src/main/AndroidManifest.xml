@@ -85,10 +85,6 @@
             android:enabled="true"
             android:exported="false" />
         <service
-            android:name=".services.ListRepositoriesService"
-            android:enabled="true"
-            android:exported="false" />
-        <service
             android:name=".services.DownloadService"
             android:enabled="true"
             android:exported="false" />
