@@ -73,10 +73,6 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <service
-            android:name=".services.LoginService"
-            android:enabled="true"
-            android:exported="false" />
-        <service
             android:name=".services.DownloadService"
             android:enabled="true"
             android:exported="false" />
