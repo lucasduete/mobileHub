@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+import lucasduete.github.io.mobilehub.ListIssueActivity;
 import lucasduete.github.io.mobilehub.SearchActivity;
 import lucasduete.github.io.mobilehub.utils.ConstManager;
 import okhttp3.OkHttpClient;
@@ -62,7 +63,7 @@ public class ListIssueService extends Service {
                 Log.d(ConstManager.TAG, jsonArray.toString());
                 Message msg = new Message();
                 msg.obj = jsonArray;
-                SearchActivity.seachHandle.sendMessage(msg);
+                ListIssueActivity.listIssueHandler.sendMessage(msg);
             }
 
         }).start();

@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -155,6 +156,13 @@ public class SearchActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(JSONArray jsonArray) {
+
+            if (jsonArray == null || jsonArray.length() <= 0) {
+                Toast.makeText(context, "Problema com a conexão com a internet",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             ArrayList<Repository> repositoriesTemp = new ArrayList<>();
 
             for (int i = 0; i < jsonArray.length(); i++) {
