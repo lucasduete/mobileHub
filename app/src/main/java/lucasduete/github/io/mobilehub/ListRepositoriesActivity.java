@@ -1,11 +1,8 @@
 package lucasduete.github.io.mobilehub;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -104,13 +101,13 @@ public class ListRepositoriesActivity extends AppCompatActivity
                 MenuManage.getActivity(this, item)
         );
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
     private void atualizarListView() {
-        ListView listView = (ListView) findViewById(R.id.listViewRepositories);
+        ListView listView = findViewById(R.id.listViewRepositories);
 
         adapter = new RepositoryAdapter(
                 repositories,
@@ -124,7 +121,7 @@ public class ListRepositoriesActivity extends AppCompatActivity
 
         @Override
         protected JSONArray doInBackground(String... strings) {
-            Log.d(ConstManager.TAG, "Chegou no Service");
+            Log.d(ConstManager.TAG, "Chegou na ListRepositories Task");
 
             String token = getSharedPreferences(ConstManager.PREFS_NAME, MODE_PRIVATE)
                     .getString("token", null);
@@ -137,10 +134,12 @@ public class ListRepositoriesActivity extends AppCompatActivity
                     .build();
 
             JSONArray jsonArray = null;
+            String jsonString = null;
 
             try {
                 Response response = client.newCall(request).execute();
-                jsonArray = new JSONArray(response.body().string());
+                jsonString = response.body().string();
+                jsonArray = new JSONArray(jsonString);
                 Log.d(ConstManager.TAG, "\n\nObjeto :\n" + jsonArray.toString());
 
             } catch (IOException ex) {
@@ -150,6 +149,8 @@ public class ListRepositoriesActivity extends AppCompatActivity
                 Log.d(ConstManager.TAG, "\n\nDeu pau na Conversão de JSON");
                 ex.printStackTrace();
             }
+
+            Log.d(ConstManager.TAG, jsonString);
 
             return jsonArray;
         }
