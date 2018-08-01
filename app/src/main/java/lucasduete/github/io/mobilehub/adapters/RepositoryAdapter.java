@@ -56,10 +56,10 @@ public class RepositoryAdapter extends BaseAdapter {
         textView.setText(repository .getNomeAutor());
 
         textView = view.findViewById(R.id.textViewDescRepo);
-        if (repository.getDescricao() != null)
-            textView.setText(repository.getDescricao());
-        else
+        if (repository.getDescricao().equalsIgnoreCase("null"))
             textView.setText("(Nenhuma Descrição Fornecida)");
+        else
+            textView.setText(repository.getDescricao());
 
         ImageView imageView = view.findViewById(R.id.imageViewFotoRepo);
         Picasso.get().load(repository .getFoto()).into(imageView);

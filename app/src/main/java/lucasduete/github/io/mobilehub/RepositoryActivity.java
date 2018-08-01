@@ -191,10 +191,10 @@ public class RepositoryActivity extends AppCompatActivity
             textView.setText(repository.getNome());
 
             textView = findViewById(R.id.textViewRepositoryDescription);
-            if (repository.getDescricao() != null)
-                textView.setText(repository.getDescricao());
-            else
+            if (repository.getDescricao().equalsIgnoreCase("null"))
                 textView.setText("(Nenhuma Descrição Fornecida)");
+            else
+                textView.setText(repository.getDescricao());
 
             textView = findViewById(R.id.textViewNumberStras);
             textView.setText(String.valueOf(repository.getStars()));
