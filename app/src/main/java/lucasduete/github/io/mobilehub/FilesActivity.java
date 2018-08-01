@@ -24,8 +24,8 @@ import lucasduete.github.io.mobilehub.services.DownloadService;
 public class FilesActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    String repo = null;
-    String owner = null;
+    String repoName = null;
+    String repoOwner = null;
     private Context context;
 //    private ArrayAdapter<String> adapter;
 
@@ -35,8 +35,8 @@ public class FilesActivity extends AppCompatActivity
         setContentView(R.layout.activity_files);
 
         this.context = this;
-        this.repo = getIntent().getStringExtra("repo");
-        this.owner = getIntent().getStringExtra("owner");
+        this.repoName = getIntent().getStringExtra("repoName");
+        this.repoOwner = getIntent().getStringExtra("repoOwner");
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -67,8 +67,8 @@ public class FilesActivity extends AppCompatActivity
         downloadButton.setOnClickListener(view -> {
             Intent intent = new Intent(context, DownloadService.class);
 
-            intent.putExtra("repo", this.repo);
-            intent.putExtra("owner", this.owner);
+            intent.putExtra("repoName", this.repoName);
+            intent.putExtra("repoOwner", this.repoOwner);
 
             startService(intent);
         });
@@ -92,7 +92,7 @@ public class FilesActivity extends AppCompatActivity
         super.onStart();
 
         WebView webView = findViewById(R.id.webViewFiles);
-        webView.loadUrl(String.format("https://github.com/%s/%s", owner, repo));
+        webView.loadUrl(String.format("https://github.com/%s/%s", repoOwner, repoName));
     }
 
     @Override
