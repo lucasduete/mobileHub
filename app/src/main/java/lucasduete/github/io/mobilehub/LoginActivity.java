@@ -55,6 +55,8 @@ public class LoginActivity extends AppCompatActivity {
         this.sharedPreferences = getSharedPreferences(ConstManager.PREFS_NAME, MODE_PRIVATE);
         this.locationManager = (LocationManager) this.getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
 
+        if (sharedPreferences.getString("token", null) != null) login();
+
         Button buttonOauth = findViewById(R.id.buttonOauth);
         buttonOauth.setOnClickListener((view) -> new LoginTask().execute(MODE_OAUTH));
 
@@ -230,10 +232,7 @@ public class LoginActivity extends AppCompatActivity {
         for (String provider: providers) {
             Location tempLocation = locationManager.getLastKnownLocation(provider);
 
-            if (tempLocation == null) {
-                Log.d(ConstManager.TAG, "Entrou no iff para null");
-                continue;
-            }
+            if (tempLocation == null) continue;
 
             if (bestLocation == null || tempLocation.getAccuracy() < bestLocation.getAccuracy())
                 bestLocation = tempLocation;
