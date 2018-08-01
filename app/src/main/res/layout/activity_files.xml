@@ -136,28 +136,33 @@
             android:layout_width="match_parent"
             android:layout_height="25dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Arquivos:"
-            android:textStyle="bold" />
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Arquivos:"-->
+            <!--android:textStyle="bold" />-->
 
-        <Space
+        <!--<Space-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="7dp" />-->
+
+
+        <!--<TextView-->
+            <!--android:id="@+id/textViewPath"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Endereço"-->
+            <!--android:textStyle="bold" />-->
+
+        <!--<ListView-->
+            <!--android:id="@+id/listViewFiles"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"></ListView>-->
+
+        <WebView
+            android:id="@+id/webViewFiles"
             android:layout_width="match_parent"
-            android:layout_height="7dp" />
-
-
-        <TextView
-            android:id="@+id/textViewPath"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Endereço"
-            android:textStyle="bold" />
-
-        <ListView
-            android:id="@+id/listViewFiles"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"></ListView>
+            android:layout_height="match_parent"></WebView>
     </LinearLayout>
 
     <android.support.design.widget.NavigationView
