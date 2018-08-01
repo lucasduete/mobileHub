@@ -16,6 +16,9 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
+import com.j256.ormlite.dao.RuntimeExceptionDao;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import lucasduete.github.io.mobilehub.dao.UserLocationDBHelper;
 import lucasduete.github.io.mobilehub.models.UserLocation;
 import lucasduete.github.io.mobilehub.utils.ConstManager;
 import okhttp3.MediaType;
@@ -31,22 +35,21 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends OrmLiteBaseActivity<UserLocationDBHelper> {
 
     private static final int MODE_BASIC = 1;
     private static final int MODE_OAUTH = 2;
     private static final int MODE_AUTHORIZATE = 3;
     private static final int MODE_ERROR = 0;
 
-    private String code = null;
     private int execMode = 0;
+    private String code = null;
 
-    private Context context = null;
     private String url = null;
+    private Context context = null;
+    private LocationManager locationManager = null;
     private SharedPreferences sharedPreferences = null;
-
-    private Location location;
-    private LocationManager locationManager;
+    private RuntimeExceptionDao<UserLocation, Integer> userLocationDao = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +57,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         this.context = this;
+        this.userLocationDao = getHelper().getSimpleDataDao();
         this.sharedPreferences = getSharedPreferences(ConstManager.PREFS_NAME, MODE_PRIVATE);
         this.locationManager = (LocationManager) this.getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
 
@@ -65,7 +69,10 @@ public class LoginActivity extends AppCompatActivity {
         buttonOauth.setOnClickListener((view) -> new LoginTask().execute(MODE_OAUTH));
 
         Button buttonLogin = findViewById(R.id.buttonLogin);
-        buttonLogin.setOnClickListener((view) -> getLocation());
+        buttonLogin.setOnClickListener((view) -> {
+            //TODO Implementar basic auth
+            login();
+        });
     }
 
     @Override
@@ -215,7 +222,9 @@ public class LoginActivity extends AppCompatActivity {
                     String token = value;
                     Log.d(ConstManager.TAG, token);
 
+                    saveLocation(getLocation());
                     sharedPreferences.edit().putString("token", token).commit();
+
                     login();
                     break;
             }
@@ -226,7 +235,7 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(ConstManager.TAG, "Entrou method");
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.d(ConstManager.TAG, "Entrou if");
+            Log.d(ConstManager.TAG, "Não tem permissões");
             return null;
         }
 
@@ -236,13 +245,18 @@ public class LoginActivity extends AppCompatActivity {
         for (String provider: providers) {
             Location tempLocation = locationManager.getLastKnownLocation(provider);
 
-            if (tempLocation == null) continue;
+            if (tempLocation == null) {
+                continue;
+            } else {
+                Log.d(ConstManager.TAG, "\n\n NAO ENTROOOU\n");
+
+            }
 
             if (bestLocation == null || tempLocation.getAccuracy() < bestLocation.getAccuracy())
                 bestLocation = tempLocation;
         }
 
-        UserLocation userLocation = UserLocation.of(bestLocation.getAltitude(), bestLocation.getLatitude(), bestLocation.getLongitude());
+        UserLocation userLocation = UserLocation.of(bestLocation.getLatitude(), bestLocation.getLongitude());
 
         Log.d("LOCATION", userLocation.toString());
 
@@ -250,15 +264,13 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean checkAccess() {
-        //TODO get userLocations from Database
-        List<UserLocation> allowedLocations = new ArrayList<>();
-        UserLocation userLocation = new UserLocation();
+
+        List<UserLocation> allowedLocations = userLocationDao.queryForAll();
+        UserLocation userLocation = getLocation();
 
         for (UserLocation location: allowedLocations) {
 
-            if (userLocation.getAltitude() <= (location.getAltitude() + 2)
-                    && userLocation.getAltitude() >= (location.getAltitude() - 2)
-                    && userLocation.getLatitude() <= (location.getLatitude() + 2)
+            if (userLocation.getLatitude() <= (location.getLatitude() + 2)
                     && userLocation.getLatitude() >= (location.getLatitude() - 2)
                     && userLocation.getLongitude() <= (location.getLongitude() + 2)
                     && userLocation.getLongitude() >= (location.getLongitude() - 2)) {
@@ -272,8 +284,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean saveLocation(UserLocation userLocation) {
-        //TODO Persist userLocation
 
-        return true;
+        return userLocationDao.create(userLocation) == 1;
     }
 }

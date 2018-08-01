@@ -1,31 +1,39 @@
 package lucasduete.github.io.mobilehub.models;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
+@DatabaseTable(tableName = "UserLocations")
 public class UserLocation {
 
-    private Double altitude;
+    @DatabaseField(generatedId = true)
+    private int id;
+
+    @DatabaseField(canBeNull = false)
     private Double latitude;
+
+    @DatabaseField(canBeNull = false)
     private Double longitude;
 
     public UserLocation() {
 
     }
 
-    public UserLocation(Double altitude, Double latitude, Double longitude) {
-        this.altitude = altitude;
+    public UserLocation(Double latitude, Double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
-    public static UserLocation of(Double altitude, Double latitude, Double longitude) {
-        return new UserLocation(altitude, latitude, longitude);
+    public static UserLocation of(Double latitude, Double longitude) {
+        return new UserLocation(latitude, longitude);
     }
 
-    public Double getAltitude() {
-        return altitude;
+    public int getId() {
+        return id;
     }
 
-    public void setAltitude(Double altitude) {
-        this.altitude = altitude;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Double getLatitude() {
@@ -52,8 +60,7 @@ public class UserLocation {
 
         UserLocation that = (UserLocation) o;
 
-        if (altitude != null ? !altitude.equals(that.altitude) : that.altitude != null)
-            return false;
+        if (id != that.id) return false;
         if (latitude != null ? !latitude.equals(that.latitude) : that.latitude != null)
             return false;
         return longitude != null ? longitude.equals(that.longitude) : that.longitude == null;
@@ -62,7 +69,7 @@ public class UserLocation {
     @Override
     public int hashCode() {
 
-        int result = altitude != null ? altitude.hashCode() : 0;
+        int result = id;
         result = 31 * result + (latitude != null ? latitude.hashCode() : 0);
         result = 31 * result + (longitude != null ? longitude.hashCode() : 0);
         return result;
@@ -72,7 +79,7 @@ public class UserLocation {
     public String toString() {
 
         final StringBuffer sb = new StringBuffer("UserLocation{");
-        sb.append("altitude=").append(altitude);
+        sb.append("id=").append(id);
         sb.append(", latitude=").append(latitude);
         sb.append(", longitude=").append(longitude);
         sb.append('}');
