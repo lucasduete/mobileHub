@@ -1,19 +1,26 @@
 package lucasduete.github.io.mobilehub;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
 
 import lucasduete.github.io.mobilehub.utils.ConstManager;
 import okhttp3.MediaType;
@@ -36,19 +43,23 @@ public class LoginActivity extends AppCompatActivity {
     private String url = null;
     private SharedPreferences sharedPreferences = null;
 
+    private Location location;
+    private LocationManager locationManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        this.sharedPreferences = getSharedPreferences(ConstManager.PREFS_NAME, MODE_PRIVATE);
         this.context = this;
+        this.sharedPreferences = getSharedPreferences(ConstManager.PREFS_NAME, MODE_PRIVATE);
+        this.locationManager = (LocationManager) this.getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
 
         Button buttonOauth = findViewById(R.id.buttonOauth);
         buttonOauth.setOnClickListener((view) -> new LoginTask().execute(MODE_OAUTH));
 
         Button buttonLogin = findViewById(R.id.buttonLogin);
-        buttonLogin.setOnClickListener((view) -> login());
+        buttonLogin.setOnClickListener((view) -> getLocation());
     }
 
     @Override
@@ -203,5 +214,32 @@ public class LoginActivity extends AppCompatActivity {
                     break;
             }
         }
+    }
+
+    private void getLocation() {
+        Log.d(ConstManager.TAG, "Entrou metod");
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.d(ConstManager.TAG, "Entrou if");
+            return;
+        }
+
+        List<String> providers = locationManager.getProviders(true);
+        Location bestLocation = null;
+
+        for (String provider: providers) {
+            Location tempLocation = locationManager.getLastKnownLocation(provider);
+
+            if (tempLocation == null) {
+                Log.d(ConstManager.TAG, "Entrou no iff para null");
+                continue;
+            }
+
+            if (bestLocation == null || tempLocation.getAccuracy() < bestLocation.getAccuracy())
+                bestLocation = tempLocation;
+        }
+
+        Log.d("LOCATION", "" + bestLocation.getLatitude() + bestLocation.getLongitude());
+
     }
 }
