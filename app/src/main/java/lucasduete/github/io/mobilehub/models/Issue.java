@@ -1,11 +1,24 @@
 package lucasduete.github.io.mobilehub.models;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
+@DatabaseTable(tableName = "issuesPinneds")
 public class Issue {
 
+    @DatabaseField(id = true)
     private int numero;
+
+    @DatabaseField(canBeNull = false)
     private String nome;
+
+    @DatabaseField
     private String Descricao;
+
+    @DatabaseField(canBeNull = false)
     private String nomeAutor;
+
+    @DatabaseField
     private String fotoAutor;
 
     public Issue() {
