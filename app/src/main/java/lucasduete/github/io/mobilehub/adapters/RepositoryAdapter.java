@@ -49,22 +49,27 @@ public class RepositoryAdapter extends BaseAdapter {
 
         TextView textView;
 
-        textView = (TextView) view.findViewById(R.id.textViewNameRepo);
+        textView = view.findViewById(R.id.textViewNameRepo);
         textView.setText(repository .getNome());
 
-        textView = (TextView) view.findViewById(R.id.textViewNameAuthor);
+        textView = view.findViewById(R.id.textViewNameAuthor);
         textView.setText(repository .getNomeAutor());
 
-        textView = (TextView) view.findViewById(R.id.textViewDescRepo);
-        textView.setText(repository .getDescricao());
+        textView = view.findViewById(R.id.textViewDescRepo);
+        if (repository.getDescricao() != null)
+            textView.setText(repository.getDescricao());
+        else
+            textView.setText("(Nenhuma Descrição Fornecida)");
 
-        ImageView imageView = (ImageView) view.findViewById(R.id.imageViewFotoRepo);
+        ImageView imageView = view.findViewById(R.id.imageViewFotoRepo);
         Picasso.get().load(repository .getFoto()).into(imageView);
 
         view.setOnClickListener(localView -> {
             Intent intent = new Intent(view.getContext(), RepositoryActivity.class);
+
             intent.putExtra("repoName", repository.getNome());
             intent.putExtra("repoOwner", repository.getNomeAutor());
+
             view.getContext().startActivity(intent);
         });
 
