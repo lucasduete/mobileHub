@@ -2,6 +2,8 @@ package lucasduete.github.io.mobilehub.models;
 
 public class Repository {
 
+    private int stars;
+    private int forks;
     private String foto;
     private String nome;
     private String nomeAutor;
@@ -11,11 +13,29 @@ public class Repository {
 
     }
 
-    public Repository(String foto, String nome, String nomeAutor, String descricao) {
+    public Repository(int stars, int forks, String foto, String nome, String nomeAutor, String descricao) {
+        this.stars = stars;
+        this.forks = forks;
         this.foto = foto;
         this.nome = nome;
         this.nomeAutor = nomeAutor;
         this.descricao = descricao;
+    }
+
+    public int getStars() {
+        return stars;
+    }
+
+    public void setStars(int stars) {
+        this.stars = stars;
+    }
+
+    public int getForks() {
+        return forks;
+    }
+
+    public void setForks(int forks) {
+        this.forks = forks;
     }
 
     public String getFoto() {
@@ -49,4 +69,5 @@ public class Repository {
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
+
 }
