@@ -18,11 +18,15 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 
+import lucasduete.github.io.mobilehub.dao.OrmLiteBaseCompactActivity;
+import lucasduete.github.io.mobilehub.dao.RepositoryDBHelper;
 import lucasduete.github.io.mobilehub.manager.MenuManage;
 import lucasduete.github.io.mobilehub.models.Repository;
 import lucasduete.github.io.mobilehub.services.DownloadService;
@@ -31,12 +35,14 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class RepositoryActivity extends AppCompatActivity
+public class RepositoryActivity extends OrmLiteBaseCompactActivity<RepositoryDBHelper>
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private String repoName = null;
     private String repoOwner = null;
     private Context context;
+
+    private Repository myRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,6 +187,7 @@ public class RepositoryActivity extends AppCompatActivity
                 repository.setDescricao(jsonObject.getString("descricao"));
                 repository.setNomeAutor(jsonObject.getString("nomeAutor"));
 
+                myRepository = repository;
             } catch (Exception ex) {
                 ex.printStackTrace();
                 Toast.makeText(context, "Erro ao Recupear as Informações.", Toast.LENGTH_SHORT).show();
