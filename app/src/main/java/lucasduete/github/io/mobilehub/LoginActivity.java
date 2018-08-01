@@ -20,8 +20,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
+import lucasduete.github.io.mobilehub.models.UserLocation;
 import lucasduete.github.io.mobilehub.utils.ConstManager;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -55,7 +57,9 @@ public class LoginActivity extends AppCompatActivity {
         this.sharedPreferences = getSharedPreferences(ConstManager.PREFS_NAME, MODE_PRIVATE);
         this.locationManager = (LocationManager) this.getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
 
-        if (sharedPreferences.getString("token", null) != null) login();
+        if (sharedPreferences.getString("token", null) != null && checkAccess() == true) {
+            login();
+        }
 
         Button buttonOauth = findViewById(R.id.buttonOauth);
         buttonOauth.setOnClickListener((view) -> new LoginTask().execute(MODE_OAUTH));
@@ -218,12 +222,12 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void getLocation() {
-        Log.d(ConstManager.TAG, "Entrou metod");
+    private UserLocation getLocation() {
+        Log.d(ConstManager.TAG, "Entrou method");
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Log.d(ConstManager.TAG, "Entrou if");
-            return;
+            return null;
         }
 
         List<String> providers = locationManager.getProviders(true);
@@ -238,7 +242,38 @@ public class LoginActivity extends AppCompatActivity {
                 bestLocation = tempLocation;
         }
 
-        Log.d("LOCATION", "" + bestLocation.getLatitude() + bestLocation.getLongitude());
+        UserLocation userLocation = UserLocation.of(bestLocation.getAltitude(), bestLocation.getLatitude(), bestLocation.getLongitude());
 
+        Log.d("LOCATION", userLocation.toString());
+
+        return userLocation;
+    }
+
+    private boolean checkAccess() {
+        //TODO get userLocations from Database
+        List<UserLocation> allowedLocations = new ArrayList<>();
+        UserLocation userLocation = new UserLocation();
+
+        for (UserLocation location: allowedLocations) {
+
+            if (userLocation.getAltitude() <= (location.getAltitude() + 2)
+                    && userLocation.getAltitude() >= (location.getAltitude() - 2)
+                    && userLocation.getLatitude() <= (location.getLatitude() + 2)
+                    && userLocation.getLatitude() >= (location.getLatitude() - 2)
+                    && userLocation.getLongitude() <= (location.getLongitude() + 2)
+                    && userLocation.getLongitude() >= (location.getLongitude() - 2)) {
+
+                return true;
+            }
+
+        }
+
+        return false;
+    }
+
+    private boolean saveLocation(UserLocation userLocation) {
+        //TODO Persist userLocation
+
+        return true;
     }
 }
