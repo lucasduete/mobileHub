@@ -11,22 +11,21 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
-import com.j256.ormlite.dao.RuntimeExceptionDao;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import lucasduete.github.io.mobilehub.dao.UserLocationDBHelper;
+import lucasduete.github.io.mobilehub.dao.DatabaseHelper;
+import lucasduete.github.io.mobilehub.dao.UserLocationDao;
 import lucasduete.github.io.mobilehub.models.UserLocation;
 import lucasduete.github.io.mobilehub.utils.ConstManager;
 import okhttp3.MediaType;
@@ -35,7 +34,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class LoginActivity extends OrmLiteBaseActivity<UserLocationDBHelper> {
+public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 
     private static final int MODE_BASIC = 1;
     private static final int MODE_OAUTH = 2;
@@ -49,7 +48,7 @@ public class LoginActivity extends OrmLiteBaseActivity<UserLocationDBHelper> {
     private Context context = null;
     private LocationManager locationManager = null;
     private SharedPreferences sharedPreferences = null;
-    private RuntimeExceptionDao<UserLocation, Integer> userLocationDao = null;
+    private UserLocationDao userLocationDao = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,13 +56,18 @@ public class LoginActivity extends OrmLiteBaseActivity<UserLocationDBHelper> {
         setContentView(R.layout.activity_login);
 
         this.context = this;
-        this.userLocationDao = getHelper().getSimpleDataDao();
         this.sharedPreferences = getSharedPreferences(ConstManager.PREFS_NAME, MODE_PRIVATE);
         this.locationManager = (LocationManager) this.getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
 
-        if (sharedPreferences.getString("token", null) != null && checkAccess() == true) {
-            login();
+        try {
+            this.userLocationDao = new UserLocationDao(getConnectionSource());
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+
+        if (sharedPreferences.getString("token", null) != null && checkAccess() == true)
+            login();
+
 
         Button buttonOauth = findViewById(R.id.buttonOauth);
         buttonOauth.setOnClickListener((view) -> new LoginTask().execute(MODE_OAUTH));
@@ -242,7 +246,7 @@ public class LoginActivity extends OrmLiteBaseActivity<UserLocationDBHelper> {
         List<String> providers = locationManager.getProviders(true);
         Location bestLocation = null;
 
-        for (String provider: providers) {
+        for (String provider : providers) {
             Location tempLocation = locationManager.getLastKnownLocation(provider);
 
             if (tempLocation == null) {
@@ -265,10 +269,19 @@ public class LoginActivity extends OrmLiteBaseActivity<UserLocationDBHelper> {
 
     private boolean checkAccess() {
 
-        List<UserLocation> allowedLocations = userLocationDao.queryForAll();
+        List<UserLocation> allowedLocations = new ArrayList<>();
+
+        try {
+            allowedLocations = userLocationDao.queryForAll();
+
+        } catch (SQLException ex) {
+
+            ex.printStackTrace();
+        }
+
         UserLocation userLocation = getLocation();
 
-        for (UserLocation location: allowedLocations) {
+        for (UserLocation location : allowedLocations) {
 
             if (userLocation.getLatitude() <= (location.getLatitude() + 2)
                     && userLocation.getLatitude() >= (location.getLatitude() - 2)
@@ -285,6 +298,13 @@ public class LoginActivity extends OrmLiteBaseActivity<UserLocationDBHelper> {
 
     private boolean saveLocation(UserLocation userLocation) {
 
-        return userLocationDao.create(userLocation) == 1;
+        try {
+
+            return userLocationDao.create(userLocation) == 1;
+        } catch (SQLException ex) {
+
+            ex.printStackTrace();
+            return false;
+        }
     }
 }

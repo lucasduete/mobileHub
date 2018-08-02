@@ -8,7 +8,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -19,15 +18,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
+import lucasduete.github.io.mobilehub.dao.DatabaseHelper;
 import lucasduete.github.io.mobilehub.dao.OrmLiteBaseCompactActivity;
-import lucasduete.github.io.mobilehub.dao.RepositoryDBHelper;
+import lucasduete.github.io.mobilehub.dao.RepositoryDao;
 import lucasduete.github.io.mobilehub.manager.MenuManage;
 import lucasduete.github.io.mobilehub.models.Repository;
 import lucasduete.github.io.mobilehub.services.DownloadService;
@@ -36,15 +35,15 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class RepositoryActivity extends OrmLiteBaseCompactActivity<RepositoryDBHelper>
+public class RepositoryActivity extends OrmLiteBaseCompactActivity<DatabaseHelper>
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private String repoName = null;
     private String repoOwner = null;
     private Context context;
 
-    private Repository myRepository = null;
     private ImageView bookmarkImageView;
+    private Repository myRepository = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -234,12 +233,33 @@ public class RepositoryActivity extends OrmLiteBaseCompactActivity<RepositoryDBH
     public boolean persistPinned() {
 
         if (this.myRepository == null) return false;
-        return getHelper().getSimpleDataDao().create(myRepository) == 1;
+
+        try {
+            RepositoryDao repositoryDao = new RepositoryDao(getConnectionSource());
+
+            return repositoryDao.create(myRepository) == 1;
+        } catch (SQLException ex) {
+
+            ex.printStackTrace();
+            return false;
+        }
+
     }
 
     public boolean checkPinned() {
 
-        this.myRepository = getHelper().getSimpleDataDao().queryForId(this.repoName);
-        return this.myRepository != null;
+        try {
+
+            RepositoryDao repositoryDao = new RepositoryDao(getConnectionSource());
+
+            this.myRepository = repositoryDao.queryForId(this.repoName);
+
+            return this.myRepository != null;
+        } catch (SQLException ex) {
+
+            ex.printStackTrace();
+            return false;
+        }
+
     }
 }
