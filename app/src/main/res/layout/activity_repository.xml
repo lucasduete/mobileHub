@@ -117,13 +117,13 @@
                 android:gravity="center"
                 android:text="Forks" />
 
-            <TextView
-                android:id="@+id/textViewFollowing"
+            <ImageView
+                android:id="@+id/imageViewBookmark"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:text="Pin" />
+                android:layout_marginTop="9dp"
+                android:src="@drawable/baseline_bookmark_border_24" />
 
             <Button
                 android:id="@+id/buttonDownload"
@@ -152,13 +152,13 @@
     </LinearLayout>
 
 
-    <!--<android.support.design.widget.NavigationView-->
-        <!--android:id="@+id/nav_view"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_gravity="start"-->
-        <!--android:fitsSystemWindows="true"-->
-        <!--app:headerLayout="@layout/nav_header_main"-->
-        <!--app:menu="@menu/activity_main_drawer" />-->
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header_main"
+        app:menu="@menu/activity_main_drawer" />
 
 </android.support.v4.widget.DrawerLayout>

@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +43,8 @@ public class RepositoryActivity extends OrmLiteBaseCompactActivity<RepositoryDBH
     private String repoOwner = null;
     private Context context;
 
-    private Repository myRepository;
+    private Repository myRepository = null;
+    private ImageView bookmarkImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,12 +98,24 @@ public class RepositoryActivity extends OrmLiteBaseCompactActivity<RepositoryDBH
             startService(intent);
         });
 
+        this.bookmarkImageView = findViewById(R.id.imageViewBookmark);
+
+        this.bookmarkImageView.setOnClickListener(view -> persistPinned());
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        new RepositoryTask().execute(repoName, repoOwner);
+
+        if (checkPinned()) {
+
+            bookmarkImageView.setImageResource(R.drawable.baseline_bookmark_24);
+            updateView();
+        } else {
+
+            new RepositoryTask().execute(repoName);
+        }
     }
 
     @Override
@@ -176,7 +190,6 @@ public class RepositoryActivity extends OrmLiteBaseCompactActivity<RepositoryDBH
 
         @Override
         protected void onPostExecute(JSONObject jsonObject) {
-            TextView textView;
             Repository repository = new Repository();
 
             try {
@@ -191,24 +204,42 @@ public class RepositoryActivity extends OrmLiteBaseCompactActivity<RepositoryDBH
             } catch (Exception ex) {
                 ex.printStackTrace();
                 Toast.makeText(context, "Erro ao Recupear as Informações.", Toast.LENGTH_SHORT).show();
+                myRepository = new Repository();
                 return;
             }
 
-            textView = findViewById(R.id.textViewRepositoryName);
-            textView.setText(repository.getNome());
-
-            textView = findViewById(R.id.textViewRepositoryDescription);
-            if (repository.getDescricao().equalsIgnoreCase("null"))
-                textView.setText("(Nenhuma Descrição Fornecida)");
-            else
-                textView.setText(repository.getDescricao());
-
-            textView = findViewById(R.id.textViewNumberStras);
-            textView.setText(String.valueOf(repository.getStars()));
-
-            textView = findViewById(R.id.textViewNumberForks);
-            textView.setText(String.valueOf(repository.getForks()));
-
+            updateView();
         }
+    }
+
+    public void updateView() {
+        TextView textView;
+
+        textView = findViewById(R.id.textViewRepositoryName);
+        textView.setText(this.myRepository.getNome());
+
+        textView = findViewById(R.id.textViewRepositoryDescription);
+        if (this.myRepository.getDescricao().equalsIgnoreCase("null"))
+            textView.setText("(Nenhuma Descrição Fornecida)");
+        else
+            textView.setText(this.myRepository.getDescricao());
+
+        textView = findViewById(R.id.textViewNumberStras);
+        textView.setText(String.valueOf(this.myRepository.getStars()));
+
+        textView = findViewById(R.id.textViewNumberForks);
+        textView.setText(String.valueOf(this.myRepository.getForks()));
+    };
+
+    public boolean persistPinned() {
+
+        if (this.myRepository == null) return false;
+        return getHelper().getSimpleDataDao().create(myRepository) == 1;
+    }
+
+    public boolean checkPinned() {
+
+        this.myRepository = getHelper().getSimpleDataDao().queryForId(this.repoName);
+        return this.myRepository != null;
     }
 }
