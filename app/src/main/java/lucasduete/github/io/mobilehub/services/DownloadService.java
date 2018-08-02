@@ -32,7 +32,6 @@ public class DownloadService extends Service {
 
         this.downloadThread = new Thread(() -> {
             final String repoName = intent.getStringExtra("repoName");
-            final String repoOwner = intent.getStringExtra("repoOwner");
 
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
