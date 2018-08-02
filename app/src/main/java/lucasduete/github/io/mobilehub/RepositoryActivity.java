@@ -99,7 +99,22 @@ public class RepositoryActivity extends OrmLiteBaseCompactActivity<DatabaseHelpe
 
         this.bookmarkImageView = findViewById(R.id.imageViewBookmark);
 
-        this.bookmarkImageView.setOnClickListener(view -> persistPinned());
+        this.bookmarkImageView.setOnClickListener(view -> {
+            if (checkPinned()) {
+
+                if (removePinned())
+                    bookmarkImageView.setImageResource(R.drawable.baseline_bookmark_border_24);
+                else
+                    Toast.makeText(context, "Houve um problema ao DesPinnar este repositório", Toast.LENGTH_SHORT).show();
+            } else {
+
+                if (persistPinned())
+                    bookmarkImageView.setImageResource(R.drawable.baseline_bookmark_24);
+                else
+                    Toast.makeText(context, "Houve um problema ao Pinnar este repositório", Toast.LENGTH_SHORT).show();
+            }
+
+        });
 
     }
 
@@ -240,10 +255,27 @@ public class RepositoryActivity extends OrmLiteBaseCompactActivity<DatabaseHelpe
             return repositoryDao.create(myRepository) == 1;
         } catch (SQLException ex) {
 
+            Log.d(ConstManager.TAG, "Deu pau ao Persistir o Pin.");
             ex.printStackTrace();
             return false;
         }
 
+    }
+
+    private boolean removePinned() {
+
+        if (this.myRepository == null) return false;
+
+        try {
+            RepositoryDao repositoryDao = new RepositoryDao(getConnectionSource());
+
+            return repositoryDao.deleteById(this.repoName) == 1;
+        } catch (SQLException ex) {
+
+            Log.d(ConstManager.TAG, "Deu pau ao Remover o Pin.");
+            ex.printStackTrace();
+            return false;
+        }
     }
 
     public boolean checkPinned() {
@@ -252,14 +284,19 @@ public class RepositoryActivity extends OrmLiteBaseCompactActivity<DatabaseHelpe
 
             RepositoryDao repositoryDao = new RepositoryDao(getConnectionSource());
 
-            this.myRepository = repositoryDao.queryForId(this.repoName);
+            Repository repositoryBD = repositoryDao.queryForId(this.repoName);
 
-            return this.myRepository != null;
+            if (repositoryBD != null) {
+                this.myRepository = repositoryBD;
+                return true;
+            }
+
         } catch (SQLException ex) {
 
+            Log.d(ConstManager.TAG, "Deu pau na Verificação do Pin.");
             ex.printStackTrace();
-            return false;
         }
 
+        return false;
     }
 }
