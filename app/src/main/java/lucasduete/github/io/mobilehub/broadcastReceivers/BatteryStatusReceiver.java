@@ -4,22 +4,27 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import lucasduete.github.io.mobilehub.services.DownloadService;
+
 public class BatteryStatusReceiver extends BroadcastReceiver {
 
-    private final Thread thread;
+    private final DownloadService downloadService;
 
-    public BatteryStatusReceiver(Thread thread) {
+    public BatteryStatusReceiver(DownloadService downloadService) {
         super();
-        this.thread = thread;
+        this.downloadService = downloadService;
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Thread thread = downloadService.downloadThread;
         switch (intent.getAction()) {
             case Intent.ACTION_BATTERY_LOW:
-                if (!this.thread.isInterrupted()) this.thread.interrupt();
+                if (!thread.isInterrupted()) thread.interrupt();
+                break;
             case Intent.ACTION_BATTERY_OKAY:
-                if (!this.thread.isAlive()) this.thread.start();
+                if (thread.isInterrupted()) thread.start();
+                break;
         }
     }
 

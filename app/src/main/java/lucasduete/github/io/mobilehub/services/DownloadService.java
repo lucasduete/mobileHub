@@ -1,34 +1,30 @@
 package lucasduete.github.io.mobilehub.services;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Environment;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.widget.Toast;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 import lucasduete.github.io.mobilehub.broadcastReceivers.BatteryStatusReceiver;
-import lucasduete.github.io.mobilehub.utils.ConstManager;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
 public class DownloadService extends Service {
 
-    private Thread downloadThread;
+    public Thread downloadThread;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         final Toast toast = Toast.makeText(this, "Error", Toast.LENGTH_SHORT);
 
-        final BatteryStatusReceiver batteryReceiver = new BatteryStatusReceiver(this.downloadThread);
+        final BatteryStatusReceiver batteryReceiver = new BatteryStatusReceiver(this);
 
         this.downloadThread = new Thread(() -> {
             final String repoName = intent.getStringExtra("repoName");
@@ -75,7 +71,7 @@ public class DownloadService extends Service {
                 ex.printStackTrace();
 
                 toast.setText("Não foi possível baixar o repositório");
-                toast.show();;
+                toast.show();
             }
 
             unregisterReceiver(batteryReceiver);
