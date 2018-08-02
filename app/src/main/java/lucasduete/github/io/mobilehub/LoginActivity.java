@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 
@@ -226,20 +227,30 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
                     String token = value;
                     Log.d(ConstManager.TAG, token);
 
-                    saveLocation(getLocation());
-                    sharedPreferences.edit().putString("token", token).commit();
+                    UserLocation userLocation = getLocation();
 
-                    login();
+                    if (userLocation != null) {
+                        saveLocation(userLocation);
+                        sharedPreferences.edit().putString("token", token).commit();
+
+                        login();
+                    }
+
                     break;
             }
         }
     }
 
     private UserLocation getLocation() {
+
         Log.d(ConstManager.TAG, "Entrou method");
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            Toast.makeText(context, "Por favor, ative as permissõs de GPS", Toast.LENGTH_LONG).show();
             Log.d(ConstManager.TAG, "Não tem permissões");
+
             return null;
         }
 
@@ -260,9 +271,17 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
                 bestLocation = tempLocation;
         }
 
-        UserLocation userLocation = UserLocation.of(bestLocation.getLatitude(), bestLocation.getLongitude());
+        UserLocation userLocation = null;
 
-        Log.d("LOCATION", userLocation.toString());
+        if (bestLocation == null) {
+
+            Toast.makeText(context, "Houve um problema ao recuperar seu GPS, tente novamente mais tarde", Toast.LENGTH_LONG).show();
+        } else {
+
+            userLocation = UserLocation.of(bestLocation.getLatitude(), bestLocation.getLongitude());
+            Log.d("LOCATION", userLocation.toString());
+
+        }
 
         return userLocation;
     }
@@ -280,6 +299,9 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
         }
 
         UserLocation userLocation = getLocation();
+
+        if (userLocation == null)
+            return false;
 
         for (UserLocation location : allowedLocations) {
 
