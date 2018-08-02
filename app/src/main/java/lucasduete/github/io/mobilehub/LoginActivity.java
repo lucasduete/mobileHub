@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -47,9 +48,10 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 
     private String url = null;
     private Context context = null;
+    MyLocationListener locationListener = null;
     private LocationManager locationManager = null;
-    private SharedPreferences sharedPreferences = null;
     private UserLocationDao userLocationDao = null;
+    private SharedPreferences sharedPreferences = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,7 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
         setContentView(R.layout.activity_login);
 
         this.context = this;
+        this.locationListener = new MyLocationListener();
         this.sharedPreferences = getSharedPreferences(ConstManager.PREFS_NAME, MODE_PRIVATE);
         this.locationManager = (LocationManager) this.getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
 
@@ -92,6 +95,15 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
             callLoginSerice(MODE_AUTHORIZATE);
         } else
             Log.d(ConstManager.TAG, "\nSem code ainda");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        this.locationManager.removeUpdates(this.locationListener);
+        this.locationManager = null;
+        this.locationListener = null;
     }
 
     private void callLoginSerice(int operation) {
@@ -254,34 +266,23 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
             return null;
         }
 
-        List<String> providers = locationManager.getProviders(true);
-        Location bestLocation = null;
-
-        for (String provider : providers) {
-            Location tempLocation = locationManager.getLastKnownLocation(provider);
-
-            if (tempLocation == null) {
-                continue;
-            } else {
-                Log.d(ConstManager.TAG, "\n\n NAO ENTROOOU\n");
-
-            }
-
-            if (bestLocation == null || tempLocation.getAccuracy() < bestLocation.getAccuracy())
-                bestLocation = tempLocation;
-        }
+        for (String provider : locationManager.getProviders(true))
+            this.locationManager.requestLocationUpdates(provider, 100, 0, this.locationListener);
 
         UserLocation userLocation = null;
 
-        if (bestLocation == null) {
+        for (String provider : locationManager.getProviders(true)) {
+            Location location = locationManager.getLastKnownLocation(provider);
 
-            Toast.makeText(context, "Houve um problema ao recuperar seu GPS, tente novamente mais tarde", Toast.LENGTH_LONG).show();
-        } else {
+            if (location == null)
+                continue;
 
-            userLocation = UserLocation.of(bestLocation.getLatitude(), bestLocation.getLongitude());
-            Log.d("LOCATION", userLocation.toString());
-
+            userLocation = UserLocation.of(location.getLatitude(), location.getLongitude());
+            break;
         }
+
+        if (userLocation == null)
+            Toast.makeText(context, "Houve um problema ao recuperar seu GPS, tente novamente mais tarde", Toast.LENGTH_LONG).show();
 
         return userLocation;
     }
@@ -329,4 +330,26 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
             return false;
         }
     }
+
+    private class MyLocationListener implements LocationListener {
+
+        @Override
+        public void onLocationChanged(Location location) {
+
+            UserLocation localLocation = UserLocation.of(location.getLatitude(), location.getLongitude());
+            Log.d(ConstManager.TAG, "\nLocal Location : " + localLocation.toString());
+
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) { }
+
+        @Override
+        public void onProviderEnabled(String provider) { }
+
+        @Override
+        public void onProviderDisabled(String provider) { }
+
+    }
 }
+
