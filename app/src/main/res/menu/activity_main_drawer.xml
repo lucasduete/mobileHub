@@ -6,11 +6,11 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_inicio"
-            android:icon="@drawable/app_logo"
+            android:icon="@drawable/baseline_home_black_24"
             android:title="Início" />
         <item
             android:id="@+id/nav_perfil"
-            android:icon="@android:drawable/ic_menu_edit"
+            android:icon="@drawable/baseline_account_circle_black_24"
             android:title="Perfil" />
         <item
             android:id="@+id/nav_meusRepositorios"
@@ -18,7 +18,7 @@
             android:title="Meus Repositórios" />
         <item
             android:id="@+id/nav_minhasEstrelas"
-            android:icon="@android:drawable/ic_menu_sort_by_size"
+            android:icon="@android:drawable/star_off"
             android:title="Minhas Estrelas" />
         <item
             android:id="@+id/nav_buscar"
