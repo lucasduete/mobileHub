@@ -22,7 +22,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:text="asdasd"
+            android:text="this is invisible men"
             android:visibility="invisible"/>
 
         <android.support.design.widget.TextInputLayout
@@ -33,7 +33,7 @@
                 android:id="@+id/inputSearch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Digite aqui"
+                android:hint="Digite aqui o nome do repositório"
                 android:inputType="text"
                 android:imeOptions="actionSend"
                 android:drawableRight="@android:drawable/ic_menu_search" />

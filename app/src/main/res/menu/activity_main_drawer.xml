@@ -23,7 +23,7 @@
         <item
             android:id="@+id/nav_buscar"
             android:icon="@android:drawable/ic_menu_search"
-            android:title="Buscar" />
+            android:title="Buscar Repositórios" />
         <!--<item-->
             <!--android:id="@+id/nav_gists"-->
             <!--android:icon="@drawable/ic_menu_slideshow"-->
