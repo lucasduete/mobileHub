@@ -31,13 +31,13 @@
 
     </group>
 
-    <item android:title="Aplicativo">
-        <menu>
-            <item
-                android:id="@+id/nav_settings"
-                android:icon="@drawable/ic_menu_manage"
-                android:title="Configurações" />
-        </menu>
-    </item>
+    <!--<item android:title="Aplicativo">-->
+        <!--<menu>-->
+            <!--<item-->
+                <!--android:id="@+id/nav_settings"-->
+                <!--android:icon="@drawable/ic_menu_manage"-->
+                <!--android:title="Configurações" />-->
+        <!--</menu>-->
+    <!--</item>-->
 
 </menu>
