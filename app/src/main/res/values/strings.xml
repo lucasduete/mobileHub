@@ -11,8 +11,8 @@
     <string name="title_activity_list_stars">ListStarsActivity</string>
     <string name="title_activity_files">FilesActivity</string>
     <string name="title_activity_setting">SettingActivity</string>
-    <string name="digite_email">Digite seu Email</string>
-    <string name="email">Email:</string>
+    <string name="digite_username">Digite seu Username</string>
+    <string name="username">Username:</string>
     <string name="senha">Senha:</string>
     <string name="digite_senha">Digite sua Senha</string>
     <string name="button_login">Login</string>
