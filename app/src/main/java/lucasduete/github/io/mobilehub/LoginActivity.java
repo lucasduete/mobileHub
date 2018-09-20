@@ -132,6 +132,7 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
             failLogin();
         }
 
+
         execMode = MODE_BASIC;
         return token;
     }
@@ -185,6 +186,9 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 
     private class LoginTask extends AsyncTask<Integer, Integer, String> {
 
+        String username;
+        String password;
+
         @Override
         protected String doInBackground(Integer... integers) {
             Log.d(ConstManager.TAG, "Chegou no Service de Login");
@@ -199,17 +203,18 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
                     EditText editText;
 
                     editText = findViewById(R.id.editTextUsername);
-                    String email = editText.getText().toString();
+                    username = editText.getText().toString();
 
                     editText = findViewById(R.id.editTextPassword);
-                    String password = editText.getText().toString();
+                    password = editText.getText().toString();
 
                     MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
                     RequestBody requestBody = RequestBody
                             .create(
                                 mediaType,
-                                String.format("username=%s,password=%s", email, password)
+                                String.format("username=%s,password=%s", username, password)
                             );
+
                     value = basicMode(client, requestBody);
                     break;
                 case MODE_OAUTH:
@@ -229,9 +234,26 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
         @Override
         protected void onPostExecute(String value) {
 
+            String token = value;
+            UserLocation userLocation;
+
             switch (execMode) {
                 case MODE_BASIC:
-                    login();
+                    Log.d(ConstManager.TAG, "\n\nToken " + token);
+                    Log.d(ConstManager.TAG, "\nUsername " + username);
+                    Log.d(ConstManager.TAG, "\nPassword " + password + "\n");
+
+                    userLocation = getLocation();
+
+                    if (userLocation != null) {
+                        saveLocation(userLocation);
+                        sharedPreferences.edit().putString("token", token).commit();
+                        sharedPreferences.edit().putString("username", username).commit();
+                        sharedPreferences.edit().putString("password", password).commit();
+
+                        login();
+                    }
+
                     break;
                 case MODE_OAUTH:
                     url = value;
@@ -242,10 +264,10 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
 
                     break;
                 case MODE_AUTHORIZATE:
-                    String token = value;
+                    token = value;
                     Log.d(ConstManager.TAG, token);
 
-                    UserLocation userLocation = getLocation();
+                    userLocation = getLocation();
 
                     if (userLocation != null) {
                         saveLocation(userLocation);
