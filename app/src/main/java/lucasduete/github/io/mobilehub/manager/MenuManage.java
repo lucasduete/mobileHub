@@ -34,10 +34,12 @@ public class MenuManage {
             case R.id.nav_buscar:
                 intent = new Intent(context, SearchActivity.class);
                 break;
-            case R.id.nav_settings:
-                intent = new Intent(context, SettingActivity.class);
-                break;
         }
+
+//            RF Removido
+//            case R.id.nav_settings:
+//                intent = new Intent(context, SettingActivity.class);
+//                break;
 
         return intent;
     }
