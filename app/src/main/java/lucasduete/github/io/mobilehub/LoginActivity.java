@@ -1,6 +1,7 @@
 package lucasduete.github.io.mobilehub;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -54,6 +55,7 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
     private LocationManager locationManager = null;
     private UserLocationDao userLocationDao = null;
     private SharedPreferences sharedPreferences = null;
+    private ProgressDialog progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +71,16 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
             this.userLocationDao = new UserLocationDao(getConnectionSource());
         } catch (SQLException e) {
             e.printStackTrace();
+            progress.dismiss();
         }
 
         if (sharedPreferences.getString("token", null) != null && checkAccess() == true)
             login();
 
+        this.progress = new ProgressDialog(context);
+        progress.setTitle("Loading");
+        progress.setMessage("Wait while loading...");
+        progress.setCancelable(false);
 
         Button buttonOauth = findViewById(R.id.buttonOauth);
         buttonOauth.setOnClickListener((view) -> new LoginTask().execute(MODE_OAUTH));
@@ -110,6 +117,7 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
     }
 
     private void login() {
+        progress.dismiss();
         Intent intentMainActivity = new Intent(context, MainActivity.class);
         finish();
         startActivity(intentMainActivity);
@@ -180,6 +188,7 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
     }
 
     private String failLogin() {
+        progress.dismiss();
         execMode = MODE_ERROR;
         return new String();
     }
@@ -192,6 +201,8 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
         @Override
         protected String doInBackground(Integer... integers) {
             Log.d(ConstManager.TAG, "Chegou no Service de Login");
+
+            progress.show();
 
             OkHttpClient client = new OkHttpClient();
 
@@ -252,6 +263,8 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
                         sharedPreferences.edit().putString("password", password).commit();
 
                         login();
+                    } else {
+                        progress.dismiss();
                     }
 
                     break;
@@ -274,6 +287,8 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
                         sharedPreferences.edit().putString("token", token).commit();
 
                         login();
+                    } else {
+                        progress.dismiss();
                     }
 
                     break;
