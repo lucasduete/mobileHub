@@ -24,7 +24,7 @@
             android:id="@+id/textViewAlert"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:text="NAO SEI PQ TÁ INVISIVEL MAS N VOU DELETAR!!!"
+            android:text="Label para Alertas!!!"
             android:visibility="invisible" />
 
         <android.support.v4.widget.SwipeRefreshLayout
