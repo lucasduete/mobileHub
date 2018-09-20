@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity
 
     private Context context;
     private FeedAdapter adapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private String username;
     private String password;
@@ -73,7 +75,13 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        atualizarListView();
+        swipeRefreshLayout = findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            Log.i(ConstManager.TAG, "onRefresh called from SwipeRefreshLayout");
+            new UpdateFeedTask().execute();
+        });
+
+        new UpdateFeedTask().execute();
     }
 
     @Override
@@ -95,14 +103,21 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                return true;
+//                break;
+//
+//            case R.id.menu_refresh:
+//                Log.i(ConstManager.TAG, "Refresh menu item selected");
+//
+//                swipeRefreshLayout.setRefreshing(true);
+//
+//                new UpdateFeedTask().execute();
+//
+//                return true;
+//                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -123,7 +138,7 @@ public class MainActivity extends AppCompatActivity
 
     private void atualizarListView() {
         TextView textView = findViewById(R.id.textViewAlert);
-        ListView listView = findViewById(R.id.listViewRepositories);
+        ListView listView = findViewById(R.id.listViewFeed);
 
         if (username == null || password == null) {
             textView.setVisibility(View.VISIBLE);
@@ -166,7 +181,7 @@ public class MainActivity extends AppCompatActivity
                             RequestBody
                                     .create(
                                             MediaType.parse("application/x-www-form-urlencoded"),
-                                            String.format("username=%s,password=%s", username, password)
+                                            String.format("username=%s&password=%s", username, password)
                                     )
                     )
                     .build();
@@ -175,6 +190,8 @@ public class MainActivity extends AppCompatActivity
             String jsonString = null;
 
             try {
+                swipeRefreshLayout.setRefreshing(true);
+
                 Response response = client.newCall(request).execute();
                 jsonString = response.body().string();
                 jsonArray = new JSONArray(jsonString);
@@ -183,9 +200,11 @@ public class MainActivity extends AppCompatActivity
             } catch (IOException ex) {
                 Log.d(ConstManager.TAG, "\n\nDeu pau na conexão");
                 ex.printStackTrace();
+                swipeRefreshLayout.setRefreshing(false);
             } catch (JSONException ex) {
                 Log.d(ConstManager.TAG, "\n\nDeu pau na Conversão de JSON");
                 ex.printStackTrace();
+                swipeRefreshLayout.setRefreshing(false);
             }
 
             Log.d(ConstManager.TAG, jsonString);
@@ -222,6 +241,8 @@ public class MainActivity extends AppCompatActivity
             feedList.clear();
             feedList.addAll(feedsTemp);
             atualizarListView();
+            swipeRefreshLayout.setRefreshing(false);
         }
     }
+
 }
