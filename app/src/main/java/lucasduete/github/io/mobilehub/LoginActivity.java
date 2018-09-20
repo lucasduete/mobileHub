@@ -11,9 +11,11 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
@@ -77,10 +79,7 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
         buttonOauth.setOnClickListener((view) -> new LoginTask().execute(MODE_OAUTH));
 
         Button buttonLogin = findViewById(R.id.buttonLogin);
-        buttonLogin.setOnClickListener((view) -> {
-            //TODO Implementar basic auth
-            login();
-        });
+        buttonLogin.setOnClickListener((view) -> new LoginTask().execute(MODE_BASIC));
     }
 
     @Override
@@ -122,23 +121,19 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
                 .post(requestBody)
                 .build();
 
-        JSONObject jsonObject = null;
+        String token = null;
 
         try {
             Response response = client.newCall(request).execute();
-            jsonObject = new JSONObject(response.body().string());
+            token = response.body().string();
         } catch (IOException ex) {
             Log.d(ConstManager.TAG, "\n\nDeu na conexão");
-            ex.printStackTrace();
-            failLogin();
-        } catch (JSONException ex) {
-            Log.d(ConstManager.TAG, "\n\nDeu ruim no JSON");
             ex.printStackTrace();
             failLogin();
         }
 
         execMode = MODE_BASIC;
-        return jsonObject.toString();
+        return token;
     }
 
     private String oauthMode(OkHttpClient client) {
@@ -195,15 +190,26 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
             Log.d(ConstManager.TAG, "Chegou no Service de Login");
 
             OkHttpClient client = new OkHttpClient();
-            MediaType mediaType = MediaType.parse("application/json; charset=utf8");
-            //TODO realemnte é necessário? qual json será injetado?
-            RequestBody requestBody = RequestBody.create(mediaType, "ALGUM JSON AQ");
 
             String value = null;
             int mode = integers[0];
 
             switch (mode) {
                 case MODE_BASIC:
+                    EditText editText;
+
+                    editText = findViewById(R.id.editTextUsername);
+                    String email = editText.getText().toString();
+
+                    editText = findViewById(R.id.editTextPassword);
+                    String password = editText.getText().toString();
+
+                    MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+                    RequestBody requestBody = RequestBody
+                            .create(
+                                mediaType,
+                                String.format("username=%s,password=%s", email, password)
+                            );
                     value = basicMode(client, requestBody);
                     break;
                 case MODE_OAUTH:
