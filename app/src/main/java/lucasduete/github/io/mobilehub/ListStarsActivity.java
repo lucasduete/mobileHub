@@ -131,8 +131,7 @@ public class ListStarsActivity extends AppCompatActivity
 
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
-                    .url(String.format("%s/repositories/stars", ConstManager.URL_BASE))
-                    .addHeader("Authorization", String.format("Bearer %s", token))
+                    .url(String.format("%s/repositories/stars?token=%s", ConstManager.URL_BASE, token))
                     .get()
                     .build();
 

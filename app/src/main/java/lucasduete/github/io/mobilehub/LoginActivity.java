@@ -83,10 +83,16 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
         progress.setCancelable(false);
 
         Button buttonOauth = findViewById(R.id.buttonOauth);
-        buttonOauth.setOnClickListener((view) -> new LoginTask().execute(MODE_OAUTH));
+        buttonOauth.setOnClickListener((view) -> {
+            new LoginTask().execute(MODE_OAUTH);
+            if (!progress.isShowing()) progress.show();
+        });
 
         Button buttonLogin = findViewById(R.id.buttonLogin);
-        buttonLogin.setOnClickListener((view) -> new LoginTask().execute(MODE_BASIC));
+        buttonLogin.setOnClickListener((view) -> {
+            new LoginTask().execute(MODE_BASIC);
+            if (!progress.isShowing()) progress.show();
+        });
     }
 
     @Override
@@ -203,8 +209,6 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
         @Override
         protected String doInBackground(Integer... integers) {
             Log.d(ConstManager.TAG, "Chegou no Service de Login");
-
-            progress.show();
 
             OkHttpClient client = new OkHttpClient();
 

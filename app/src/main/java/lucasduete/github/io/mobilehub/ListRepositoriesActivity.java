@@ -128,8 +128,7 @@ public class ListRepositoriesActivity extends AppCompatActivity
 
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
-                    .url(String.format("%s/repositories", ConstManager.URL_BASE))
-                    .header("Authorization", String.format("Bearer %s", token))
+                    .url(String.format("%s/repositories?token=%s", ConstManager.URL_BASE, token))
                     .get()
                     .build();
 
