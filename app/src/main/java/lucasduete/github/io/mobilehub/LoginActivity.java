@@ -63,6 +63,7 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
         setContentView(R.layout.activity_login);
 
         this.context = this;
+        this.progress = new ProgressDialog(context);
         this.locationListener = new MyLocationListener();
         this.sharedPreferences = getSharedPreferences(ConstManager.PREFS_NAME, MODE_PRIVATE);
         this.locationManager = (LocationManager) this.getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
@@ -77,7 +78,6 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
         if (sharedPreferences.getString("token", null) != null && checkAccess() == true)
             login();
 
-        this.progress = new ProgressDialog(context);
         progress.setTitle("Loading");
         progress.setMessage("Wait while loading...");
         progress.setCancelable(false);
@@ -117,7 +117,9 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
     }
 
     private void login() {
-        progress.dismiss();
+        if(progress.isShowing())
+            progress.dismiss();
+
         Intent intentMainActivity = new Intent(context, MainActivity.class);
         finish();
         startActivity(intentMainActivity);
