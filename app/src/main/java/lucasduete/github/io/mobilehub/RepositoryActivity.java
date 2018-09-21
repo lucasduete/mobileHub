@@ -1,10 +1,13 @@
 package lucasduete.github.io.mobilehub;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -43,8 +46,10 @@ public class RepositoryActivity extends OrmLiteBaseCompactActivity<DatabaseHelpe
     private String repoName = null;
     private String repoOwner = null;
 
-    private PopField popField;
+    private String jsonString = "";
 
+    private PopField popField;
+    private int count = 0;
 
     private ImageView bookmarkImageView;
     private Repository myRepository = null;
@@ -105,6 +110,7 @@ public class RepositoryActivity extends OrmLiteBaseCompactActivity<DatabaseHelpe
         this.bookmarkImageView = findViewById(R.id.imageViewBookmark);
 
         this.bookmarkImageView.setOnClickListener(view -> {
+
             if (checkPinned()) {
                 if (removePinned()) {
                     bookmarkImageView.setImageResource(R.drawable.baseline_bookmark_border_24);
@@ -135,8 +141,23 @@ public class RepositoryActivity extends OrmLiteBaseCompactActivity<DatabaseHelpe
             bookmarkImageView.setImageResource(R.drawable.baseline_bookmark_24);
             updateView();
         } else {
+            Log.d(ConstManager.TAG, "aqui 1");
+            new Thread(() -> {
+                while (true) {
+                    Log.d(ConstManager.TAG, "aqui 2");
+                    new RepositoryTask().execute(repoName);
 
-            new RepositoryTask().execute(repoName);
+                    try {
+                        Thread.sleep(10000);
+                        Log.d(ConstManager.TAG, "aqui 3");
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        Log.d(ConstManager.TAG, "aqui 4");
+                    }
+                    Log.d(ConstManager.TAG, "aqui 5");
+                }
+            }).start();
+
         }
     }
 
@@ -230,6 +251,14 @@ public class RepositoryActivity extends OrmLiteBaseCompactActivity<DatabaseHelpe
                 return;
             }
 
+            if(!jsonObject.toString().equals(jsonString)) {
+                if (count != 0){
+                    sendNotification();
+                    jsonString = jsonObject.toString();
+                }
+
+                count++;
+            }
             updateView();
         }
     }
@@ -306,5 +335,21 @@ public class RepositoryActivity extends OrmLiteBaseCompactActivity<DatabaseHelpe
         }
 
         return false;
+    }
+
+    private void sendNotification() {
+        Notification notification = new NotificationCompat.Builder(context)
+                .setSmallIcon(R.drawable.app_logo)
+                .setContentTitle("Repositório foi atualizado!")
+                .setContentText("Repositório atualizado!")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .build();
+
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notification.vibrate = new long[]{150, 300, 150, 600};
+        mNotificationManager.notify(1, notification);
+
     }
 }
