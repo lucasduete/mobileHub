@@ -86,7 +86,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="12" />
+                android:text="21" />
 
             <TextView
                 android:id="@+id/textViewNumberFollowing"
@@ -94,7 +94,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="17" />
+                android:text="34" />
         </LinearLayout>
 
         <Space
@@ -153,7 +153,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="35dp"
-            android:text="Eu sou um dev fullstack bem lokasso."
+            android:text="Estudante de ADS no IFPB Cajazeiras.\nConsultor Jr em @loopisjr.\nFullstack Developer."
             android:textStyle="italic"
             android:contentDescription="@string/biografia_content_description" />
 
