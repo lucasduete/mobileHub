@@ -1,16 +1,16 @@
 <resources>
     <string name="app_name">MobileHub</string>
     <string name="descricao_logo">Logo do Aplicativo</string>
-    <string name="title_activity_main">MainActivity</string>
-    <string name="title_activity_profile">ProfileActivity</string>
-    <string name="title_activity_repository">RepositoryActivity</string>
-    <string name="title_activity_list_repositories">ListRepositoriesActivity</string>
-    <string name="title_activity_search">SearchActivity</string>
-    <string name="title_activity_issue">IssueActivity</string>
-    <string name="title_activity_list_issue">ListIssueActivity</string>
-    <string name="title_activity_list_stars">ListStarsActivity</string>
-    <string name="title_activity_files">FilesActivity</string>
-    <string name="title_activity_setting">SettingActivity</string>
+    <string name="title_activity_main">Feed de Noticias</string>
+    <string name="title_activity_profile">Perfil de Usuário</string>
+    <string name="title_activity_repository">Dados de Repositório</string>
+    <string name="title_activity_list_repositories">Lista de Repositórios</string>
+    <string name="title_activity_search">Tela de Busca</string>
+    <string name="title_activity_issue">Dados de Issue</string>
+    <string name="title_activity_list_issue">Lista de Issues</string>
+    <string name="title_activity_list_stars">Estrelas</string>
+    <string name="title_activity_files">Arquivos de Repositório</string>
+    <string name="title_activity_setting">Configurações</string>
     <string name="digite_username">Digite seu Username</string>
     <string name="username">Username:</string>
     <string name="senha">Senha:</string>
