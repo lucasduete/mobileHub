@@ -34,13 +34,17 @@ import lucasduete.github.io.mobilehub.utils.ConstManager;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import rb.popview.PopField;
 
 public class RepositoryActivity extends OrmLiteBaseCompactActivity<DatabaseHelper>
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private Context context;
     private String repoName = null;
     private String repoOwner = null;
-    private Context context;
+
+    private PopField popField;
+
 
     private ImageView bookmarkImageView;
     private Repository myRepository = null;
@@ -51,6 +55,7 @@ public class RepositoryActivity extends OrmLiteBaseCompactActivity<DatabaseHelpe
         setContentView(R.layout.activity_repository);
 
         this.context = this;
+        this.popField = PopField.attach2Window(this);
         this.repoName = getIntent().getStringExtra("repoName");
         this.repoOwner = getIntent().getStringExtra("repoOwner");
 
@@ -101,15 +106,18 @@ public class RepositoryActivity extends OrmLiteBaseCompactActivity<DatabaseHelpe
 
         this.bookmarkImageView.setOnClickListener(view -> {
             if (checkPinned()) {
-
-                if (removePinned())
+                if (removePinned()) {
                     bookmarkImageView.setImageResource(R.drawable.baseline_bookmark_border_24);
+                    popField.popView(bookmarkImageView, bookmarkImageView, true);
+                }
                 else
                     Toast.makeText(context, "Houve um problema ao DesPinnar este repositório", Toast.LENGTH_SHORT).show();
             } else {
 
-                if (persistPinned())
+                if (persistPinned()) {
                     bookmarkImageView.setImageResource(R.drawable.baseline_bookmark_24);
+                    popField.popView(bookmarkImageView, bookmarkImageView, true);
+                }
                 else
                     Toast.makeText(context, "Houve um problema ao Pinnar este repositório", Toast.LENGTH_SHORT).show();
             }
