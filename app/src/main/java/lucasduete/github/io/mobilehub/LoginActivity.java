@@ -229,7 +229,7 @@ public class LoginActivity extends OrmLiteBaseActivity<DatabaseHelper> {
                     RequestBody requestBody = RequestBody
                             .create(
                                 mediaType,
-                                String.format("username=%s,password=%s", username, password)
+                                String.format("username=%s&password=%s", username, password)
                             );
 
                     value = basicMode(client, requestBody);
